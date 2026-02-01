@@ -57,7 +57,7 @@ export default function Dashboard() {
 
   return (
     <div
-      className="px-4 sm:px-6 py-12 sm:py-16"
+      className="min-h-screen overflow-y-auto px-4 sm:px-6 py-12 sm:py-16"
       style={{ backgroundColor: "#F0EEEA" }}
     >
       <div className="max-w-5xl mx-auto space-y-8">

@@ -40,7 +40,8 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="px-4 md:px-6 py-8"
+    <main
+      className="min-h-screen flex items-center justify-center px-4"
       style={{ backgroundColor: "#F0EEEA" }}
     >
       <form

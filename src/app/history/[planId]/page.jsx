@@ -45,7 +45,8 @@ export default function PlanDetailPage() {
   }
 
   return (
-    <main className="px-4 md:px-6 py-8"
+    <main
+      className="min-h-screen px-4 md:px-6 lg:px-8 py-8"
       style={{ backgroundColor: "#F0EEEA" }}
     >
       <div className="max-w-5xl mx-auto space-y-6">

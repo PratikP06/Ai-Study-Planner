@@ -100,7 +100,8 @@ export default function TopicsPage() {
   }
 
   return (
-    <main className="px-4 md:px-6 py-8"
+    <main
+      className="min-h-screen p-6"
       style={{ backgroundColor: "#F0EEEA" }}
     >
       <div className="max-w-xl mx-auto space-y-6">

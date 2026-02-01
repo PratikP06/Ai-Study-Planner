@@ -8,7 +8,7 @@ import { supabase } from "@/lib/client";
 export default function PlannerPage() {
   const router = useRouter();
 
-  const [plan, setPlan] = useState(null);
+  const [plan, setPlan] = useState("");
   const [loading, setLoading] = useState(true);
   const [cached, setCached] = useState(false);
   const [generatedAt, setGeneratedAt] = useState("");
@@ -32,14 +32,6 @@ export default function PlannerPage() {
         supabase.from("exams").select("*").eq("user_id", user.id),
       ]);
 
-    // 🚫 FRONTEND GUARD
-    if (!subjects?.length || !topics?.length) {
-      setPlan(null);
-      setCached(false);
-      setLoading(false);
-      return;
-    }
-
     const res = await fetch("/api/ai", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -52,22 +44,11 @@ export default function PlannerPage() {
       }),
     });
 
-    if (!res.ok) {
-      setPlan(null);
-      setLoading(false);
-      return;
-    }
-
     const data = await res.json();
 
     setPlan(data.plan);
     setCached(data.cached);
-    setGeneratedAt(
-      new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    );
+    setGeneratedAt(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
     setLoading(false);
   };
 
@@ -84,8 +65,8 @@ export default function PlannerPage() {
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: "#F0EEEA" }}
       >
-        <p style={{ color: "#6B7C78" }}>
-          Generating your study plan…
+        <p className="text-sm" style={{ color: "#6B7C78" }}>
+          Generating your calm study plan…
         </p>
       </main>
     );
@@ -97,7 +78,7 @@ export default function PlannerPage() {
       style={{ backgroundColor: "#F0EEEA" }}
     >
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* Header */}
+        {/* Header + Actions */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1
@@ -106,91 +87,71 @@ export default function PlannerPage() {
             >
               📅 Today’s Study Plan
             </h1>
-            {plan && (
-              <p className="text-sm mt-1" style={{ color: "#6B7C78" }}>
-                Generated at {generatedAt} {cached && "• saved"}
-              </p>
-            )}
+            <p className="text-sm mt-1" style={{ color: "#6B7C78" }}>
+              Generated at {generatedAt} {cached && "• saved"}
+            </p>
           </div>
 
-          <button
-            onClick={() => generatePlan(true)}
-            disabled={!plan}
-            className="px-4 py-2 rounded-md text-sm font-medium transition disabled:opacity-50"
-            style={{
-              backgroundColor: "#97B3AE",
-              color: "#FFFFFF",
-            }}
-          >
-            🔁 Regenerate
-          </button>
-        </div>
-
-        {/* Empty State */}
-        {!plan ? (
-          <div
-            className="bg-white rounded-xl border p-6 text-center space-y-4"
-            style={{ borderColor: "#D6CBBF" }}
-          >
-            <h2
-              className="text-lg font-semibold"
-              style={{ color: "#3A4F4B" }}
-            >
-              No study plan yet
-            </h2>
-
-            <p
-              className="text-sm"
-              style={{ color: "#6B7C78" }}
-            >
-              Add at least one subject and topic to generate your daily study plan.
-            </p>
-
+          <div className="flex gap-2">
             <button
-              onClick={() => router.push("/dashboard")}
-              className="px-5 py-2.5 rounded-md text-sm font-medium transition"
+              onClick={() => generatePlan(true)}
+              className="px-4 py-2 rounded-md text-sm font-medium transition hover:opacity-90"
               style={{ backgroundColor: "#97B3AE", color: "#fff" }}
             >
-              Add subjects & topics
+              🔁 Regenerate
+            </button>
+
+            <button
+              onClick={() => router.push("/history")}
+              className="px-4 py-2 rounded-md text-sm border transition hover:bg-white/50"
+              style={{ borderColor: "#D6CBBF", color: "#3A4F4B" }}
+            >
+              View history
             </button>
           </div>
-        ) : (
-          <div
-            className="bg-white rounded-xl border p-5 md:p-6"
-            style={{ borderColor: "#D6CBBF" }}
+        </div>
+
+        {/* Plan Card */}
+        <div
+          className="bg-white rounded-xl border p-5 md:p-6"
+          style={{ borderColor: "#D6CBBF" }}
+        >
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => (
+                <p
+                  className="text-sm leading-6 mb-3"
+                  style={{ color: "#3A4F4B" }}
+                >
+                  {children}
+                </p>
+              ),
+              h2: ({ children }) => (
+                <h2
+                  className="text-base font-semibold mt-5 mb-2"
+                  style={{ color: "#3A4F4B" }}
+                >
+                  {children}
+                </h2>
+              ),
+              li: ({ children }) => (
+                <li
+                  className="ml-4 list-disc text-sm leading-5 mb-1"
+                  style={{ color: "#6B7C78" }}
+                >
+                  {children}
+                </li>
+              ),
+              strong: ({ children }) => (
+                <strong className="font-semibold" style={{ color: "#3A4F4B" }}>
+                  {children}
+                </strong>
+              ),
+            }}
           >
-            <ReactMarkdown
-              components={{
-                p: ({ children }) => (
-                  <p
-                    className="text-sm leading-6 mb-3"
-                    style={{ color: "#3A4F4B" }}
-                  >
-                    {children}
-                  </p>
-                ),
-                h2: ({ children }) => (
-                  <h2
-                    className="text-base font-semibold mt-5 mb-2"
-                    style={{ color: "#3A4F4B" }}
-                  >
-                    {children}
-                  </h2>
-                ),
-                li: ({ children }) => (
-                  <li
-                    className="ml-4 list-disc text-sm leading-5 mb-1"
-                    style={{ color: "#6B7C78" }}
-                  >
-                    {children}
-                  </li>
-                ),
-              }}
-            >
-              {plan}
-            </ReactMarkdown>
-          </div>
-        )}
+            {plan}
+          </ReactMarkdown>
+        </div>
       </div>
     </main>
   );
