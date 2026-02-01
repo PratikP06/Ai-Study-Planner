@@ -1,65 +1,101 @@
-import Image from "next/image";
-
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
+    <main
+      className="min-h-full px-6 py-16"
+      style={{ backgroundColor: "#F0EEEA" }}
+    >
+      <section className="max-w-6xl mx-auto grid gap-12 md:grid-cols-2 items-center">
+        
+        {/* LEFT TEXT */}
+        <div>
+          <h1
+            className="text-4xl md:text-5xl font-semibold leading-tight"
+            style={{ color: "#3A4F4B" }}
+          >
+            Plan your studies.
+            <br />
+            Calmly. Intelligently.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p
+            className="mt-5 text-lg leading-relaxed"
+            style={{ color: "#6B7C78" }}
+          >
+            An AI-powered study planner that helps you organize subjects,
+            track weak topics, and generate a realistic daily study plan
+            based on your exams — without burnout.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+          <p
+            className="mt-3 text-base"
+            style={{ color: "#6B7C78" }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            No pressure. No overplanning. Just steady progress, every day.
+          </p>
+
+          <div className="mt-8 flex gap-4 flex-wrap">
+            <a
+              href="/dashboard"
+              className="px-6 py-3 rounded-lg font-medium transition hover:opacity-90"
+              style={{
+                backgroundColor: "#97B3AE",
+                color: "#FFFFFF",
+              }}
+            >
+              Get Started
+            </a>
+
+            <a
+              href="/planner"
+              className="px-6 py-3 rounded-lg font-medium border transition hover:bg-white/40"
+              style={{
+                borderColor: "#D6CBBF",
+                color: "#3A4F4B",
+              }}
+            >
+              View Planner
+            </a>
+          </div>
+        </div>
+
+        {/* RIGHT MOCK CARD */}
+        <div className="relative flex justify-center md:justify-end">
+          <div
+            className="w-full max-w-sm rounded-2xl shadow-lg p-6"
+            style={{ backgroundColor: "#F0DDD6" }}
+          >
+            <div
+              className="h-3 w-12 rounded mb-4"
+              style={{ backgroundColor: "#97B3AE" }}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+            <h3
+              className="text-lg font-semibold mb-3"
+              style={{ color: "#3A4F4B" }}
+            >
+              Today’s Study Plan
+            </h3>
+
+            <ul
+              className="text-sm space-y-3"
+              style={{ color: "#5F6F6B" }}
+            >
+              <li>🕘 9:00 – 10:00 · DSA (Weak topics)</li>
+              <li>☕ 10:00 – 10:10 · Break</li>
+              <li>🕙 10:10 – 11:00 · DBMS Revision</li>
+              <li>🧠 Focused, realistic pacing</li>
+            </ul>
+
+            <div
+              className="mt-5 h-2 rounded"
+              style={{ backgroundColor: "#F2C3B9" }}
+            />
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* SCROLL TEST (optional, remove later) */}
+      <div className="h-[400px]" />
+    </main>
   );
 }
