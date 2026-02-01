@@ -20,12 +20,12 @@ export async function POST(req) {
     } = await req.json();
 
     /* --------------------------------------------------
-       🚫 HARD GUARD — never call AI without context
+       HARD GUARD — DO NOT CALL AI WITHOUT CONTEXT
     -------------------------------------------------- */
     if (!subjects.length || !topics.length) {
       return NextResponse.json(
         {
-          error: "Subjects and topics are required to generate a study plan.",
+          error: "Subjects and topics required",
           code: "MISSING_CONTEXT",
         },
         { status: 400 }
@@ -33,20 +33,26 @@ export async function POST(req) {
     }
 
     /* --------------------------------------------------
-       ⏱ TIME SETUP (HARD ANCHORED)
+       FORCE IST TIME (WORKS ON VERCEL + LOCAL)
     -------------------------------------------------- */
-    const now = new Date();
+    const now = new Date(
+      new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Kolkata",
+      })
+    );
+
     const today = now.toISOString().slice(0, 10);
 
-    const startTimeISO = now.toISOString(); // machine-readable
-    const startTimeLabel = now.toLocaleTimeString("en-IN", {
+    const currentTimeLabel = now.toLocaleTimeString("en-IN", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
 
+    const currentTimeISO = now.toISOString();
+
     /* --------------------------------------------------
-       📦 EXISTING PLAN CHECK
+       CHECK EXISTING PLAN
     -------------------------------------------------- */
     const { data: existingPlan } = await supabase
       .from("plans")
@@ -55,7 +61,7 @@ export async function POST(req) {
       .eq("plan_date", today)
       .single();
 
-    // Return cached plan if not regenerating
+    // return cached plan if not regenerating
     if (existingPlan && !regenerate) {
       return NextResponse.json({
         plan: existingPlan.content,
@@ -63,33 +69,31 @@ export async function POST(req) {
       });
     }
 
-    // Delete old plan if regenerating
+    // delete old plan if regenerating
     if (existingPlan && regenerate) {
       await supabase.from("plans").delete().eq("id", existingPlan.id);
     }
 
     /* --------------------------------------------------
-       🧠 AI PROMPT (STRICT + HARD RULES)
+       AI PROMPT — TIME SAFE, REMAINING DAY ONLY
     -------------------------------------------------- */
     const prompt = `
-You are an expert study planner.
+You are an expert study planner helping a college student.
 
-🚨 HARD TIME CONSTRAINT (ABSOLUTE RULES):
-- Current time (ISO): ${startTimeISO}
-- Local time now: ${startTimeLabel}
-- ALL study blocks MUST start AFTER ${startTimeLabel}
-- DO NOT include any AM times
-- DO NOT include any time earlier than ${startTimeLabel}
-- If you do, the plan is INVALID
+IMPORTANT CONTEXT (CRITICAL):
+- Current local time (IST): ${currentTimeLabel}
+- Current time ISO: ${currentTimeISO}
+- The plan MUST start AFTER this time
+- Cover ONLY the remaining part of TODAY
+- NEVER include morning or past time slots
 
 GOAL:
-Create a focused, realistic study plan ONLY for the remaining part of TODAY.
+Create a calm, realistic study plan for the rest of today.
 
 STUDENT CONTEXT:
-- Remaining energy is moderate
-- Remaining study time today: ~3–5 hours
-- Needs balance between weak topics, revision, and rest
-- Avoid burnout or late-night overload
+- Remaining energy: moderate
+- Remaining time: ~3–5 hours
+- Avoid burnout and late-night overload
 
 SUBJECTS:
 ${subjects.map((s) => `- ${s.name}`).join("\n")}
@@ -101,57 +105,27 @@ EXAMS:
 ${exams.map((e) => `- ${e.subject}: exam in ${e.daysLeft} days`).join("\n")}
 
 PLANNING RULES:
-1. Start ALL time slots AFTER ${startTimeLabel}
-2. Prioritize weak topics and nearest exams
-3. Strong topics → quick revision only
-4. Use 45–60 minute focus blocks
-5. Insert 5–10 minute breaks
-6. ONE longer break if time allows
-7. Do NOT extend late into the night unrealistically
-
-EXAMPLE FORMAT (DO NOT COPY EXACTLY):
-- ${startTimeLabel} – ${new Date(
-      now.getTime() + 45 * 60000
-    ).toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    })}: First focused study block
+1. Start strictly AFTER ${currentTimeLabel}
+2. No AM slots if current time is PM
+3. Prioritize weak topics and nearest exams
+4. 45–60 min focus blocks
+5. Short breaks (5–10 min)
+6. One longer break if time allows
+7. End reasonably — no burnout
 
 OUTPUT FORMAT:
-- Bullet points
-- Clear time slots
+- Clear time slots (e.g. 5:15–6:00 PM)
+- Bullet points only
 - Simple, motivating tone
-- End with 2 short evening tips
+- End with 2 short tips for the evening
 
-Now generate the plan.
+Now generate today’s study plan.
 `;
 
-    /* --------------------------------------------------
-       🤖 CALL AI
-    -------------------------------------------------- */
     const plan = await askGemini(prompt);
 
     /* --------------------------------------------------
-       🚨 HARD VALIDATION (NO TRUSTING LLMs)
-    -------------------------------------------------- */
-    const invalidAMRegex = /\b(0?[1-9]|1[0-1]):\d{2}\s?(AM|am)\b/;
-
-    if (invalidAMRegex.test(plan)) {
-      console.error("❌ Invalid plan generated (contains AM time)");
-
-      return NextResponse.json(
-        {
-          error:
-            "Invalid plan generated. Please regenerate (AI returned past times).",
-          code: "INVALID_TIME_OUTPUT",
-        },
-        { status: 422 }
-      );
-    }
-
-    /* --------------------------------------------------
-       💾 SAVE PLAN
+       SAVE PLAN
     -------------------------------------------------- */
     await supabase.from("plans").insert({
       user_id: userId,
@@ -165,7 +139,7 @@ Now generate the plan.
       regenerated: regenerate,
     });
   } catch (err) {
-    console.error("AI API ERROR:", err);
+    console.error(err);
     return NextResponse.json(
       { error: err.message },
       { status: 500 }
