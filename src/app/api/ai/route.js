@@ -6,7 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // server-only
+  process.env.SUPABASE_SERVICE_ROLE_KEY 
 );
 
 export async function POST(req) {
@@ -19,9 +19,6 @@ export async function POST(req) {
       regenerate = false,
     } = await req.json();
 
-    /* --------------------------------------------------
-       HARD GUARD — DO NOT CALL AI WITHOUT CONTEXT
-    -------------------------------------------------- */
     if (!subjects.length || !topics.length) {
       return NextResponse.json(
         {
@@ -32,9 +29,6 @@ export async function POST(req) {
       );
     }
 
-    /* --------------------------------------------------
-       FORCE IST TIME (WORKS ON VERCEL + LOCAL)
-    -------------------------------------------------- */
     const now = new Date(
       new Date().toLocaleString("en-US", {
         timeZone: "Asia/Kolkata",
@@ -51,9 +45,6 @@ export async function POST(req) {
 
     const currentTimeISO = now.toISOString();
 
-    /* --------------------------------------------------
-       CHECK EXISTING PLAN
-    -------------------------------------------------- */
     const { data: existingPlan } = await supabase
       .from("plans")
       .select("id, content")
@@ -61,7 +52,6 @@ export async function POST(req) {
       .eq("plan_date", today)
       .single();
 
-    // return cached plan if not regenerating
     if (existingPlan && !regenerate) {
       return NextResponse.json({
         plan: existingPlan.content,
@@ -69,14 +59,10 @@ export async function POST(req) {
       });
     }
 
-    // delete old plan if regenerating
     if (existingPlan && regenerate) {
       await supabase.from("plans").delete().eq("id", existingPlan.id);
     }
 
-    /* --------------------------------------------------
-       AI PROMPT — TIME SAFE, REMAINING DAY ONLY
-    -------------------------------------------------- */
     const prompt = `
 You are an expert study planner helping a college student.
 
@@ -124,9 +110,6 @@ Now generate today’s study plan.
 
     const plan = await askGemini(prompt);
 
-    /* --------------------------------------------------
-       SAVE PLAN
-    -------------------------------------------------- */
     await supabase.from("plans").insert({
       user_id: userId,
       plan_date: today,

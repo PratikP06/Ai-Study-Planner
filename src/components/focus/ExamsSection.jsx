@@ -11,14 +11,25 @@ export default function ExamsSection({ userId }) {
   const [examDate, setExamDate] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      // fetch subjects
+    const fetchAndCleanData = async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayISO = today.toISOString().slice(0, 10);
+
+      // 🧹 1️⃣ Delete past exams
+      await supabase
+        .from("exams")
+        .delete()
+        .eq("user_id", userId)
+        .lt("exam_date", todayISO);
+
+      // 📚 2️⃣ Fetch subjects
       const { data: subjectsData } = await supabase
         .from("subjects")
         .select("*")
         .eq("user_id", userId);
 
-      // fetch exams (sorted)
+      // 📅 3️⃣ Fetch upcoming exams (sorted)
       const { data: examsData } = await supabase
         .from("exams")
         .select("*, subjects(name)")
@@ -29,7 +40,7 @@ export default function ExamsSection({ userId }) {
       setExams(examsData || []);
     };
 
-    fetchData();
+    fetchAndCleanData();
   }, [userId]);
 
   const addExam = async () => {
@@ -60,17 +71,24 @@ export default function ExamsSection({ userId }) {
   };
 
   const deleteExam = async (id) => {
-    const { error } = await supabase
-      .from("exams")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      console.error(error);
-      return;
-    }
-
+    await supabase.from("exams").delete().eq("id", id);
     setExams(exams.filter((e) => e.id !== id));
+  };
+
+  const getDaysLeft = (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const exam = new Date(date);
+    exam.setHours(0, 0, 0, 0);
+
+    const diff = Math.ceil(
+      (exam - today) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diff === 0) return "Today";
+    if (diff === 1) return "Tomorrow";
+    return `${diff} days left`;
   };
 
   return (
@@ -85,7 +103,7 @@ export default function ExamsSection({ userId }) {
         📅 Exams
       </h2>
 
-      {/* Add exam */}
+      
       <div className="flex gap-2 mb-4 items-center">
         <select
           value={subjectId}
@@ -128,27 +146,41 @@ export default function ExamsSection({ userId }) {
               className="flex justify-between items-center rounded p-2 text-sm"
               style={{ border: "1px solid #D6CBBF" }}
             >
-              <span style={{ color: "#3A4F4B" }}>
-                {e.subjects?.name}
-                <span style={{ color: "#6B7C78" }}>
-                  {" "}· {e.exam_date}
-                </span>
-              </span>
+              <div>
+                <p style={{ color: "#3A4F4B" }}>
+                  {e.subjects?.name}
+                </p>
+                <p className="text-xs" style={{ color: "#6B7C78" }}>
+                  {new Date(e.exam_date).toDateString()}
+                </p>
+              </div>
 
-              <button
-                onClick={() => deleteExam(e.id)}
-                title="Delete exam"
-                className="transition hover:text-red-600"
-                style={{ color: "#6B7C78" }}
-              >
-                <FiTrash2 size={16} />
-              </button>
+              <div className="flex items-center gap-3">
+                <span
+                  className="text-xs px-2 py-1 rounded-full font-medium"
+                  style={{
+                    backgroundColor: "#97B3AE",
+                    color: "#3A4F4B",
+                  }}
+                >
+                  {getDaysLeft(e.exam_date)}
+                </span>
+
+                <button
+                  onClick={() => deleteExam(e.id)}
+                  title="Delete exam"
+                  className="transition hover:text-red-600"
+                  style={{ color: "#6B7C78" }}
+                >
+                  <FiTrash2 size={16} />
+                </button>
+              </div>
             </li>
           ))}
         </ul>
       ) : (
         <p className="text-sm" style={{ color: "#6B7C78" }}>
-          No exams added yet
+          No upcoming exams 🎉
         </p>
       )}
     </section>
