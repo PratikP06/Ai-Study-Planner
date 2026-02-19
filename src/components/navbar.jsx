@@ -34,12 +34,12 @@ export default function Navbar() {
   };
 
   // Hide navbar on dashboard pages
-  if (pathname.startsWith("/dashboard")) {
-    return null;
-  }
-
+  
   return (
-    <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full px-4">
+   <header
+  className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full px-4
+    ${pathname.startsWith("/dashboard") ? "md:hidden" : ""}`}
+>
       <div
         className="max-w-6xl mx-auto h-14 sm:h-16 rounded-2xl flex items-center justify-between px-5 sm:px-8 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.08)]"
         style={{
