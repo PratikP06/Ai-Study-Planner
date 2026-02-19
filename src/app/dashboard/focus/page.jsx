@@ -49,11 +49,8 @@ export default function Timer() {
     }
 
     return (
-        <div
-            className="min-h-screen 
-      bg-gradient-to-br from-[#F0DDD6] via-[#F0EEEA] to-[#F2C3B9]/40 
-      px-4 sm:px-8 py-10 sm:py-16"
-        >
+       <div className="px-6 sm:px-10 py-12">
+
             <div className="max-w-4xl mx-auto space-y-12">
                                 <header className="text-center sm:text-left space-y-2">
                     <h1 className="flex items-center gap-3 text-2xl sm:text-3xl font-semibold text-[#3A4F4B]">

@@ -11,6 +11,8 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const isDashboard = pathname.startsWith("/dashboard");
+
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -33,53 +35,63 @@ export default function Navbar() {
     router.push("/");
   };
 
-  // Hide navbar on dashboard pages
-  
   return (
-   <header
-  className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full px-4
-    ${pathname.startsWith("/dashboard") ? "md:hidden" : ""}`}
->
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 px-4 pt-4
+      ${isDashboard ? "md:hidden" : ""}`}
+    >
       <div
-        className="max-w-6xl mx-auto h-14 sm:h-16 rounded-2xl flex items-center justify-between px-5 sm:px-8 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.08)]"
+        className="max-w-6xl mx-auto h-14 sm:h-16 rounded-3xl 
+        flex items-center justify-between px-5 sm:px-8
+        backdrop-blur-md shadow-[0_8px_25px_rgba(0,0,0,0.05)]"
         style={{
-          backgroundColor: "rgba(246,243,237,0.85)",
-          border: "1px solid #D6CBBF",
+          backgroundColor: "rgba(240,238,234,0.85)",
         }}
       >
-        {/* Logo */}
         <Link
-          href="/"
-          className="text-xl sm:text-2xl font-semibold tracking-wide"
-          style={{ color: "#3A4F4B" }}
+          href={user ? "/dashboard" : "/"}
+          className="text-xl sm:text-2xl font-semibold tracking-wide text-[#3A4F4B]"
         >
           FlowState
         </Link>
 
-        {/* Right Side */}
-        <nav className="flex items-center gap-4 text-sm">
-          {user !== undefined && (
-            user ? (
-              <button
-                onClick={logout}
-                className="p-2 rounded-full hover:bg-[#97B3AE]/20 transition"
-                aria-label="Logout"
-              >
-                <FiLogOut size={20} color="#3A4F4B" />
-              </button>
+        <nav className="flex items-center gap-4 sm:gap-6 text-sm">
+          {user !== undefined &&
+            (user ? (
+              <>
+                {!isDashboard && (
+                  <Link
+                    href="/dashboard"
+                    className="hidden md:block text-[#6B7C78] hover:opacity-80 transition"
+                  >
+                    Dashboard
+                  </Link>
+                )}
+
+                <button
+                  onClick={logout}
+                  className="p-2 rounded-full hover:bg-[#97B3AE]/15 transition"
+                >
+                  <FiLogOut size={20} className="text-[#3A4F4B]" />
+                </button>
+              </>
             ) : (
-              <Link
-                href="/login"
-                className="px-4 py-2 rounded-full text-sm font-medium transition hover:opacity-90"
-                style={{
-                  backgroundColor: "#97B3AE",
-                  color: "#FFFFFF",
-                }}
-              >
-                Login
-              </Link>
-            )
-          )}
+              <>
+                <Link
+                  href="/login"
+                  className="text-[#6B7C78] hover:opacity-80 transition"
+                >
+                  Login
+                </Link>
+
+                <Link
+                  href="/signup"
+                  className="hidden sm:block px-5 py-2 rounded-full text-sm font-medium bg-[#97B3AE] text-white"
+                >
+                  Get Started
+                </Link>
+              </>
+            ))}
         </nav>
       </div>
     </header>

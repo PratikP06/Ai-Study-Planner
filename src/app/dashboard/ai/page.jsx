@@ -82,11 +82,8 @@ export default function AIPage() {
     }
 
     return (
-        <div
-            className="min-h-screen bg-gradient-to-br 
-    from-[#F0DDD6] via-[#F0EEEA] to-[#D2E0D3]/40 
-    px-4 sm:px-8 py-12"
-        >
+       <div className="px-6 sm:px-10 py-12">
+
             <div className="max-w-5xl mx-auto space-y-8">
                                 <div
                     className="bg-[#F6F3ED] rounded-3xl p-6 

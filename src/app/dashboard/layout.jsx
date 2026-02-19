@@ -4,67 +4,71 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/client";
 
+import Navbar from "@/components/navbar";
 import Sidebar from "@/components/dashboard/sidebar";
 import MobileNav from "@/components/dashboard/mobilenav";
 
 export default function DashboardLayout({ children }) {
-    const router = useRouter();
+  const router = useRouter();
 
-    const [collapsed, setCollapsed] = useState(false);
-    const [user, setUser] = useState(null);
-    const [name, setName] = useState("");
-    const [loading, setLoading] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState(null);
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const init = async () => {
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
+  useEffect(() => {
+    const init = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-            if (!user) {
-                router.push("/login");
-                return;
-            }
+      if (!user) {
+        router.push("/login");
+        return;
+      }
 
-            setUser(user);
+      setUser(user);
 
-            const { data: profile } = await supabase
-                .from("profiles")
-                .select("name")
-                .eq("id", user.id)
-                .single();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("id", user.id)
+        .single();
 
-            if (profile?.name) {
-                setName(profile.name);
-            }
+      if (profile?.name) setName(profile.name);
 
-            setLoading(false);
-        };
+      setLoading(false);
+    };
 
-        init();
-    }, [router]);
+    init();
+  }, [router]);
 
-    if (loading) {
-        return null;  
-    }
+  if (loading) return null;
 
-    return (
-        <div className="flex min-h-screen bg-[#F0EEEA]">
-            <Sidebar
-                collapsed={collapsed}
-                setCollapsed={setCollapsed}
-                name={name}
-                user={user}
-            />
+  return (
+    <div
+      className="flex min-h-screen 
+      bg-gradient-to-br 
+      from-[#F0DDD6] via-[#F0EEEA] to-[#D2E0D3]/40"
+    >
+      <Navbar />
 
-            <main
-                className={`flex-1 transition-all duration-300 overflow-y-auto pb-16 md:pb-0
+      <Sidebar
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        name={name}
+        user={user}
+      />
+
+      <main
+        className={`flex-1 transition-all duration-300 overflow-y-auto
+        pt-20 pb-16 md:pt-0 md:pb-0
         ${collapsed ? "md:ml-20" : "md:ml-64"}`}
-            >
-                {children}
-            </main>
+      >
+        {children}
+      </main>
 
-            <MobileNav />
-        </div>
-    );
+      <MobileNav />
+    </div>
+  );
 }
