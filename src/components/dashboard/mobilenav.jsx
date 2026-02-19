@@ -31,23 +31,43 @@ export default function MobileNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-3 md:hidden z-50">
-      {navItems.map((item) => {
-        const Icon = item.icon;
-        const isActive = pathname.startsWith(item.href);
+    <nav
+      className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-md
+      backdrop-blur-xl rounded-3xl border z-50 md:hidden"
+      style={{
+        backgroundColor: "rgba(246,243,237,0.9)",
+        borderColor: "#D6CBBF",
+      }}
+    >
+      <div className="flex justify-around py-3">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname.startsWith(item.href);
 
-        return (
-          <Link
-            key={item.name}
-            href={item.href}
-            className={`flex flex-col items-center text-xs transition
-              ${isActive ? "text-[#97B3AE]" : "text-[#6B7C78]"}`}
-          >
-            <Icon size={20} />
-            <span className="mt-1">{item.name}</span>
-          </Link>
-        );
-      })}
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className="flex flex-col items-center text-xs transition-all duration-200"
+              style={{
+                color: isActive ? "#97B3AE" : "#6B7C78",
+              }}
+            >
+              <div
+                className={`p-2 rounded-xl transition ${
+                  isActive ? "bg-[#97B3AE]/15" : ""
+                }`}
+              >
+                <Icon size={20} />
+              </div>
+
+              <span className="mt-1 text-[11px]">
+                {item.name}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }

@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/client";
 import { useRouter, usePathname } from "next/navigation";
+import { FiLogOut } from "react-icons/fi";
 
 export default function Navbar() {
-  const [user, setUser] = useState(undefined); 
-   
+  const [user, setUser] = useState(undefined);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -33,71 +33,51 @@ export default function Navbar() {
     router.push("/");
   };
 
+  // Hide navbar on dashboard pages
   if (pathname.startsWith("/dashboard")) {
     return null;
   }
 
   return (
-    <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full px-4">
+    <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full px-4">
       <div
-        className="max-w-6xl mx-auto h-16 rounded-3xl flex items-center justify-between px-8 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.08)]"
+        className="max-w-6xl mx-auto h-14 sm:h-16 rounded-2xl flex items-center justify-between px-5 sm:px-8 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.08)]"
         style={{
           backgroundColor: "rgba(246,243,237,0.85)",
           border: "1px solid #D6CBBF",
         }}
       >
+        {/* Logo */}
         <Link
           href="/"
-          className="text-2xl font-semibold tracking-wide"
+          className="text-xl sm:text-2xl font-semibold tracking-wide"
           style={{ color: "#3A4F4B" }}
         >
           FlowState
         </Link>
 
-        <nav className="flex items-center gap-6 text-sm">
-                    {user !== undefined && (
+        {/* Right Side */}
+        <nav className="flex items-center gap-4 text-sm">
+          {user !== undefined && (
             user ? (
-              <>
-                <Link
-                  href="/dashboard"
-                  className="transition hover:opacity-80"
-                  style={{ color: "#6B7C78" }}
-                >
-                  Dashboard
-                </Link>
-
-                <button
-                  onClick={logout}
-                  className="px-5 py-2 rounded-full text-sm font-medium transition hover:opacity-90"
-                  style={{
-                    backgroundColor: "#97B3AE",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Logout
-                </button>
-              </>
+              <button
+                onClick={logout}
+                className="p-2 rounded-full hover:bg-[#97B3AE]/20 transition"
+                aria-label="Logout"
+              >
+                <FiLogOut size={20} color="#3A4F4B" />
+              </button>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="transition hover:opacity-80"
-                  style={{ color: "#6B7C78" }}
-                >
-                  Login
-                </Link>
-
-                <Link
-                  href="/signup"
-                  className="px-5 py-2 rounded-full text-sm font-medium transition hover:opacity-90"
-                  style={{
-                    backgroundColor: "#97B3AE",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Get Started
-                </Link>
-              </>
+              <Link
+                href="/login"
+                className="px-4 py-2 rounded-full text-sm font-medium transition hover:opacity-90"
+                style={{
+                  backgroundColor: "#97B3AE",
+                  color: "#FFFFFF",
+                }}
+              >
+                Login
+              </Link>
             )
           )}
         </nav>
