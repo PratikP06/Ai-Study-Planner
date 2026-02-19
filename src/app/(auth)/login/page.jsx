@@ -42,8 +42,7 @@ export default function Login() {
         className="w-full max-w-sm bg-white border rounded-xl p-6 space-y-5"
         style={{ borderColor: "#D6CBBF" }}
       >
-        {/* Header */}
-        <div className="text-center">
+                <div className="text-center">
           <h1
             className="text-2xl font-semibold"
             style={{ color: "#3A4F4B" }}
@@ -58,15 +57,13 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Error */}
-        {errmsg && (
+                {errmsg && (
           <p className="text-sm text-center text-red-500">
             {errmsg}
           </p>
         )}
 
-        {/* Inputs */}
-        <div className="space-y-3">
+                <div className="space-y-3">
           <input
             type="email"
             placeholder="Email"
@@ -88,8 +85,7 @@ export default function Login() {
           />
         </div>
 
-        {/* Button */}
-        <button
+                <button
           disabled={loading}
           className="w-full py-2.5 rounded-md text-sm font-medium transition disabled:opacity-60"
           style={{
@@ -100,8 +96,7 @@ export default function Login() {
           {loading ? "Logging in…" : "Log in"}
         </button>
 
-        {/* Footer */}
-        <p
+                <p
           className="text-sm text-center"
           style={{ color: "#6B7C78" }}
         >

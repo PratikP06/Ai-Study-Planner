@@ -7,7 +7,6 @@ export default function useTimer(userId) {
   const [activeSession, setActiveSession] = useState(null);
   const [elapsed, setElapsed] = useState(0);
 
-  // 1️⃣ Fetch active session
   useEffect(() => {
     if (!userId) return;
 
@@ -17,7 +16,7 @@ export default function useTimer(userId) {
         .select("*")
         .eq("user_id", userId)
         .is("end_time", null)
-        .maybeSingle(); // ✅ FIX
+        .maybeSingle();
 
       if (error) {
         console.error("Fetch active session error:", error);
@@ -38,7 +37,6 @@ export default function useTimer(userId) {
     fetchActiveSession();
   }, [userId]);
 
-  // 2️⃣ Live ticking
   useEffect(() => {
     if (!activeSession) return;
 
@@ -51,15 +49,14 @@ export default function useTimer(userId) {
     return () => clearInterval(interval);
   }, [activeSession]);
 
-  // 3️⃣ Start session
   const startSession = async (subjectId) => {
-    // Stop existing session safely
+
     const { data: existing } = await supabase
       .from("sessions")
       .select("*")
       .eq("user_id", userId)
       .is("end_time", null)
-      .maybeSingle(); // ✅ FIX
+      .maybeSingle();
 
     if (existing) {
       const end = new Date();
@@ -76,7 +73,6 @@ export default function useTimer(userId) {
         .eq("id", existing.id);
     }
 
-    // Start new session
     const { data: newSession, error } = await supabase
       .from("sessions")
       .insert({
@@ -85,7 +81,7 @@ export default function useTimer(userId) {
         start_time: new Date().toISOString(),
       })
       .select()
-      .single(); // ✅ safe here (insert always returns 1)
+      .single(); 
 
     if (error) {
       console.error("Start session error:", error);
@@ -96,7 +92,6 @@ export default function useTimer(userId) {
     setElapsed(0);
   };
 
-  // 4️⃣ Stop session
   const stopSession = async () => {
     if (!activeSession) return;
 

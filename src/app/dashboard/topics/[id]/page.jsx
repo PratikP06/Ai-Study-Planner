@@ -26,7 +26,7 @@ export default function TopicsPage() {
         return;
       }
 
-      // fetch subject
+       
       const { data: subjectData } = await supabase
         .from("subjects")
         .select("*")
@@ -40,7 +40,7 @@ export default function TopicsPage() {
 
       setSubject(subjectData);
 
-      // fetch topics
+       
       const { data: topicsData } = await supabase
         .from("topics")
         .select("*")
@@ -105,8 +105,7 @@ export default function TopicsPage() {
       style={{ backgroundColor: "#F0EEEA" }}
     >
       <div className="max-w-xl mx-auto space-y-6">
-        {/* Back */}
-        <button
+                <button
           onClick={() => router.push("/dashboard")}
           className="text-sm hover:underline"
           style={{ color: "#6B7C78" }}
@@ -114,8 +113,7 @@ export default function TopicsPage() {
           ← Back to Dashboard
         </button>
 
-        {/* Header */}
-        <header>
+                <header>
           <h1
             className="text-2xl font-semibold"
             style={{ color: "#3A4F4B" }}
@@ -130,8 +128,7 @@ export default function TopicsPage() {
           </p>
         </header>
 
-        {/* Add topic */}
-        <div
+                <div
           className="rounded-xl border p-4 space-y-3"
           style={{ backgroundColor: "#FFFFFF", borderColor: "#D6CBBF" }}
         >
@@ -161,8 +158,7 @@ export default function TopicsPage() {
           </button>
         </div>
 
-        {/* Topics list */}
-        <ul className="space-y-2">
+                <ul className="space-y-2">
           {topics.map((t) => (
             <li
               key={t.id}

@@ -26,6 +26,7 @@ export async function POST(req) {
       );
     }
 
+     
     const now = new Date(
       new Date().toLocaleString("en-US", {
         timeZone: "Asia/Kolkata",
@@ -42,7 +43,7 @@ export async function POST(req) {
 
     const currentTimeISO = now.toISOString();
 
-    // 🔁 Fetch yesterday's plan
+     
     const yesterday = new Date(now);
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayDate = yesterday.toISOString().slice(0, 10);
@@ -54,94 +55,72 @@ export async function POST(req) {
       .eq("plan_date", yesterdayDate)
       .single();
 
+     
     const { data: existingPlan } = await supabase
       .from("plans")
-      .select("id, content")
+      .select("id, content, created_at")
       .eq("user_id", userId)
       .eq("plan_date", today)
       .single();
 
+     
     if (existingPlan && !regenerate) {
       return NextResponse.json({
         plan: existingPlan.content,
         cached: true,
+        createdAt: existingPlan.created_at,
       });
     }
 
+     
     if (existingPlan && regenerate) {
       await supabase.from("plans").delete().eq("id", existingPlan.id);
     }
 
-    // 🔥 STRONG PROMPT
+     
     const prompt = `
 You are an expert study coach and AI planner.
 
-CRITICAL TIME CONTEXT:
-- Current local time (IST): ${currentTimeLabel}
-- Current ISO time: ${currentTimeISO}
-- Plan must start strictly AFTER this time
-- Cover ONLY the remaining part of TODAY
+Current IST Time: ${currentTimeLabel}
+Current ISO Time: ${currentTimeISO}
 
-UTILIZATION RULES (MANDATORY):
-- Use AT LEAST 60% of the remaining available time today
-- Schedule AT LEAST 60 minutes of total study time
-- Prefer 2 or more study sessions per subject when possible
-- Avoid shallow plans or minimal schedules
+Use at least 60% of remaining time today.
+Schedule minimum 60 minutes total.
+Use 45–60 min focus blocks.
+Include short breaks.
 
-STUDENT CONTEXT:
-- Energy level: moderate
-- Goal: make meaningful progress, not just "touch topics"
-- Avoid burnout, but also avoid underutilizing time
-
-SUBJECTS:
+Subjects:
 ${subjects.map((s) => `- ${s.name}`).join("\n")}
 
-TOPICS (with strength):
+Topics:
 ${topics.map((t) => `- ${t.name} (${t.strength})`).join("\n")}
 
-EXAMS:
+Exams:
 ${exams.map((e) => `- ${e.subject}: exam in ${e.daysLeft} days`).join("\n")}
 
-YESTERDAY'S PLAN (FOR REFLECTION ONLY):
+Yesterday:
 ${yesterdayPlan?.content || "No plan yesterday."}
 
-PLANNING RULES:
-1. Prioritize weak topics and closer exams
-2. Use 45–60 minute focused study blocks
-3. Include 5–10 min short breaks
-4. One longer break if total study exceeds 3 hours
-5. If few topics exist for a subject, go DEEP (methods, practice, revision)
-6. Do NOT repeat yesterday's structure blindly — improve upon it
-7. End at a reasonable time (no late-night overload)
-
-OUTPUT FORMAT (STRICT):
-1. Time-based schedule (e.g. 6:15–7:00 PM)
-2. For EACH study block include:
-   - Topic focus
-   - HOW to study (steps)
-   - What success looks like
-3. End with:
-   - Why this plan is better than yesterday
-   - 2 short evening tips
-
-Tone: calm, precise, mentor-like.
-Do NOT be generic.
-
-Now generate today’s study plan.
+Return structured time-based schedule with improvements over yesterday.
 `;
 
     const plan = await askGemini(prompt);
 
-    await supabase.from("plans").insert({
-      user_id: userId,
-      plan_date: today,
-      content: plan,
-    });
+     
+    const { data: inserted } = await supabase
+      .from("plans")
+      .insert({
+        user_id: userId,
+        plan_date: today,
+        content: plan,
+      })
+      .select("created_at")
+      .single();
 
     return NextResponse.json({
       plan,
       cached: false,
-      regenerated: regenerate,
+      createdAt: inserted.created_at,
     });
   } catch (err) {
     console.error(err);

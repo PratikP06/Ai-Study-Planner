@@ -8,7 +8,7 @@ export default function SubjectTimerCard({
   elapsed,
   startSession,
   stopSession,
-  todayTotal = 0, // seconds
+  todayTotal = 0,
 }) {
   const isActive = activeSession?.subject_id === subject.id;
 
@@ -28,46 +28,52 @@ export default function SubjectTimerCard({
 
   return (
     <div
-      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4
-                 rounded-xl border border-[#D6D1C8]
-                 bg-[#F6F3ED] px-5 py-4"
+      className="flex flex-col sm:flex-row sm:items-center justify-between gap-6
+                 rounded-2xl
+                 bg-[#F6F3ED]
+                 shadow-[0_10px_30px_rgba(0,0,0,0.05)]
+                 px-6 py-5 transition-all duration-300"
     >
-      {/* Left */}
-      <div className="space-y-1">
-        <h3 className="font-semibold text-[#3A4F4B] text-base sm:text-lg">
+            <div className="space-y-2">
+        <h3 className="font-semibold text-[#3A4F4B] text-lg">
           {subject.name}
         </h3>
 
         <p className="text-sm text-[#6B7C78] flex items-center gap-2">
-          <FaStopwatch className="opacity-70" />
-          Today:{" "}
-          <span className="font-medium">
+          <FaStopwatch className="opacity-70 text-[#97B3AE]" />
+          Today:
+          <span className="font-medium text-[#3A4F4B]">
             {formatTime(displayTime)}
           </span>
         </p>
       </div>
 
-      {/* Right */}
-      <div className="self-end sm:self-auto">
+            <div className="flex justify-end">
         {isActive ? (
           <button
             onClick={stopSession}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg
-                       bg-red-500 text-white text-sm font-medium
-                       hover:opacity-90 transition"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl
+                       bg-[#F2C3B9]/60
+                       text-[#3A4F4B]
+                       font-medium text-sm
+                       hover:bg-[#F2C3B9]/80
+                       transition-all duration-200"
           >
-            <FaPause />
-            Pause
+            <FaPause size={14} />
+            
           </button>
         ) : (
           <button
             onClick={() => startSession(subject.id)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg
-                       bg-green-500 text-white text-sm font-medium
-                       hover:opacity-90 transition"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl
+                       bg-[#97B3AE]/40
+                       text-[#3A4F4B]
+                       font-medium text-sm
+                       hover:bg-[#97B3AE]/60
+                       transition-all duration-200"
           >
-            <FaPlay />
-            Start
+            <FaPlay size={14} />
+         
           </button>
         )}
       </div>

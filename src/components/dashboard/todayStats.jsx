@@ -35,9 +35,9 @@ export default function TodayFocusCard({ userId }) {
   };
 
   return (
-    <div className="rounded-xl p-6 bg-white shadow-sm">
-      <p className="text-sm text-gray-500">Today’s focus</p>
-      <h2 className="text-2xl font-semibold mt-2">
+    <div className="bg-[#F6F3ED] rounded-3xl p-6 border border-[#D6CBBF] shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
+      <p className="text-sm text-[#6B7C78] mb-2">Today’s focus</p>
+      <h2 className="text-3xl font-semibold text-[#3A4F4B]">
         {format(seconds)}
       </h2>
     </div>

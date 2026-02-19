@@ -6,7 +6,7 @@ import useTimer from "@/hooks/useTimer";
 import { supabase } from "@/lib/client";
 
 export default function TimerSection({ subjects, userId }) {
-  const timer = useTimer(userId); // ✅ single timer brain
+  const timer = useTimer(userId);  
   const [todayTotals, setTodayTotals] = useState({});
 
   useEffect(() => {

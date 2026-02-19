@@ -34,8 +34,7 @@ export default function HistoryPage() {
             style={{ backgroundColor: "#F0EEEA" }}
         >
             <div className="max-w-5xl mx-auto space-y-6">
-                {/* Header */}
-                <header>
+                                <header>
                     <h1
                         className="text-2xl font-semibold"
                         style={{ color: "#3A4F4B" }}
@@ -47,8 +46,7 @@ export default function HistoryPage() {
                     </p>
                 </header>
 
-                {/* History list */}
-                <button
+                                <button
                     onClick={() => router.push("/dashboard")}
                     className="text-sm font-medium transition hover:opacity-70"
                     style={{ color: "#97B3AE" }}

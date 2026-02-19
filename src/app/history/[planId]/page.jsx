@@ -50,8 +50,7 @@ export default function PlanDetailPage() {
       style={{ backgroundColor: "#F0EEEA" }}
     >
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* Back */}
-        <button
+                <button
           onClick={() => router.back()}
           className="text-sm font-medium transition hover:opacity-70"
           style={{ color: "#97B3AE" }}
@@ -59,8 +58,7 @@ export default function PlanDetailPage() {
           ← Back to history
         </button>
 
-        {/* Title */}
-        <header>
+                <header>
           <h1
             className="text-2xl font-semibold"
             style={{ color: "#3A4F4B" }}
@@ -69,8 +67,7 @@ export default function PlanDetailPage() {
           </h1>
         </header>
 
-        {/* Plan */}
-        <div
+                <div
           className="bg-white rounded-xl border p-5 md:p-6"
           style={{ borderColor: "#D6CBBF" }}
         >

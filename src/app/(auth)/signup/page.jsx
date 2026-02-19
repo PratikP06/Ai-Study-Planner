@@ -29,7 +29,7 @@ export default function SignupPage() {
       return;
     }
 
-    // create profile
+     
     await supabase.from("profiles").insert({
       id: data.user.id,
       name,
@@ -49,8 +49,7 @@ export default function SignupPage() {
         className="w-full max-w-sm bg-white border rounded-xl p-6 space-y-5"
         style={{ borderColor: "#D6CBBF" }}
       >
-        {/* Header */}
-        <div className="text-center">
+                <div className="text-center">
           <h1
             className="text-2xl font-semibold"
             style={{ color: "#3A4F4B" }}
@@ -65,15 +64,13 @@ export default function SignupPage() {
           </p>
         </div>
 
-        {/* Error */}
-        {errorMsg && (
+                {errorMsg && (
           <p className="text-sm text-center text-red-500">
             {errorMsg}
           </p>
         )}
 
-        {/* Inputs */}
-        <div className="space-y-3">
+                <div className="space-y-3">
           <input
             type="text"
             placeholder="Name"
@@ -105,8 +102,7 @@ export default function SignupPage() {
           />
         </div>
 
-        {/* Button */}
-        <button
+                <button
           disabled={loading}
           className="w-full py-2.5 rounded-md text-sm font-medium transition disabled:opacity-60"
           style={{
@@ -117,8 +113,7 @@ export default function SignupPage() {
           {loading ? "Creating account…" : "Sign up"}
         </button>
 
-        {/* Footer */}
-        <p
+                <p
           className="text-sm text-center"
           style={{ color: "#6B7C78" }}
         >

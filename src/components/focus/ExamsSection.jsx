@@ -16,20 +16,20 @@ export default function ExamsSection({ userId }) {
       today.setHours(0, 0, 0, 0);
       const todayISO = today.toISOString().slice(0, 10);
 
-      // 🧹 1️⃣ Delete past exams
+       
       await supabase
         .from("exams")
         .delete()
         .eq("user_id", userId)
         .lt("exam_date", todayISO);
 
-      // 📚 2️⃣ Fetch subjects
+       
       const { data: subjectsData } = await supabase
         .from("subjects")
         .select("*")
         .eq("user_id", userId);
 
-      // 📅 3️⃣ Fetch upcoming exams (sorted)
+       
       const { data: examsData } = await supabase
         .from("exams")
         .select("*, subjects(name)")
@@ -92,97 +92,75 @@ export default function ExamsSection({ userId }) {
   };
 
   return (
-    <section
-      className="rounded-xl border p-5"
-      style={{ backgroundColor: "#FFFFFF", borderColor: "#D6CBBF" }}
+    <section className="rounded-3xl p-8 bg-[#F6F3ED] border border-[#D6CBBF] shadow-[0_25px_60px_rgba(0,0,0,0.06)]">
+
+  <h2 className="text-xl font-semibold text-[#3A4F4B] mb-6">
+    Exams
+  </h2>
+
+  <div className="flex gap-3 mb-6 items-center">
+    <select
+      value={subjectId}
+      onChange={(e) => setSubjectId(e.target.value)}
+      className="flex-1 rounded-xl px-4 py-2 bg-white border border-[#D6CBBF]">
+      <option value="">Select subject</option>
+      {subjects.map((s) => (
+        <option key={s.id} value={s.id}>
+          {s.name}
+        </option>
+      ))}
+    </select>
+
+    <input
+      type="date"
+      value={examDate}
+      onChange={(e) => setExamDate(e.target.value)}
+      className="rounded-xl px-4 py-2  bg-white border border-[#D6CBBF]" />
+
+    <button
+      onClick={addExam}
+      className="text-[#97B3AE] hover:scale-110 transition"
     >
-      <h2
-        className="text-lg font-semibold mb-4"
-        style={{ color: "#3A4F4B" }}
-      >
-        📅 Exams
-      </h2>
+      <FiPlus size={20} />
+    </button>
+  </div>
 
-      
-      <div className="flex gap-2 mb-4 items-center">
-        <select
-          value={subjectId}
-          onChange={(e) => setSubjectId(e.target.value)}
-          className="flex-1 border rounded p-2 text-sm"
-          style={{ borderColor: "#D6CBBF" }}
-        >
-          <option value="">Select subject</option>
-          {subjects.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
+  {exams.length > 0 ? (
+    <ul className="space-y-4">
+      {exams.map((e) => (
+        <li
+          key={e.id}
+          className="bg-white/70 backdrop-blur-sm  rounded-2xl p-4  border border-[#D6CBBF] hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-300 flex justify-between items-center">
+          <div>
+            <p className="text-[#3A4F4B] font-medium">
+              {e.subjects?.name}
+            </p>
+            <p className="text-xs text-[#6B7C78]">
+              {new Date(e.exam_date).toDateString()}
+            </p>
+          </div>
 
-        <input
-          type="date"
-          value={examDate}
-          onChange={(e) => setExamDate(e.target.value)}
-          className="border rounded p-2 text-sm"
-          style={{ borderColor: "#D6CBBF" }}
-        />
+          <div className="flex items-center gap-4">
+            <span className="px-4 py-1.5 rounded-full text-xs font-medium bg-[#97B3AE]/70 text-[#3A4F4B]">
+              {getDaysLeft(e.exam_date)}
+            </span>
 
-        <button
-          onClick={addExam}
-          title="Add exam"
-          className="transition hover:opacity-80"
-          style={{ color: "#97B3AE" }}
-        >
-          <FiPlus size={20} />
-        </button>
-      </div>
-
-      {/* Exams list */}
-      {exams.length > 0 ? (
-        <ul className="space-y-2">
-          {exams.map((e) => (
-            <li
-              key={e.id}
-              className="flex justify-between items-center rounded p-2 text-sm"
-              style={{ border: "1px solid #D6CBBF" }}
+            <button
+              onClick={() => deleteExam(e.id)}
+              className="text-[#6B7C78] hover:text-red-500 transition"
             >
-              <div>
-                <p style={{ color: "#3A4F4B" }}>
-                  {e.subjects?.name}
-                </p>
-                <p className="text-xs" style={{ color: "#6B7C78" }}>
-                  {new Date(e.exam_date).toDateString()}
-                </p>
-              </div>
+              <FiTrash2 size={16} />
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-sm text-[#6B7C78]">
+      No upcoming exams
+    </p>
+  )}
+</section>
 
-              <div className="flex items-center gap-3">
-                <span
-                  className="text-xs px-2 py-1 rounded-full font-medium"
-                  style={{
-                    backgroundColor: "#97B3AE",
-                    color: "#3A4F4B",
-                  }}
-                >
-                  {getDaysLeft(e.exam_date)}
-                </span>
-
-                <button
-                  onClick={() => deleteExam(e.id)}
-                  title="Delete exam"
-                  className="transition hover:text-red-600"
-                  style={{ color: "#6B7C78" }}
-                >
-                  <FiTrash2 size={16} />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-sm" style={{ color: "#6B7C78" }}>
-          No upcoming exams 🎉
-        </p>
-      )}
-    </section>
   );
 }

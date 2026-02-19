@@ -13,7 +13,7 @@ export default function SubjectsSection({ userId }) {
 
     useEffect(() => {
         const fetchSubjectsAndTopics = async () => {
-            // 1️⃣ Fetch subjects owned by user
+             
             const { data: subjectsData, error: subjectError } = await supabase
                 .from("subjects")
                 .select("*")
@@ -31,7 +31,7 @@ export default function SubjectsSection({ userId }) {
                 return;
             }
 
-            // 2️⃣ Fetch topics that belong to those subjects
+             
             const subjectIds = subjectsData.map((s) => s.id);
 
             const { data: topicsData, error: topicError } = await supabase
@@ -44,7 +44,7 @@ export default function SubjectsSection({ userId }) {
                 return;
             }
 
-            // 3️⃣ Group topics by subject_id
+             
             const grouped = {};
             for (const topic of topicsData || []) {
                 if (!grouped[topic.subject_id]) {
@@ -81,7 +81,7 @@ export default function SubjectsSection({ userId }) {
 
         setSubjects(subjects.filter((s) => s.id !== id));
 
-        // also remove its topics from UI state
+         
         const updated = { ...topicsBySubject };
         delete updated[id];
         setTopicsBySubject(updated);
@@ -98,7 +98,7 @@ export default function SubjectsSection({ userId }) {
             return;
         }
 
-        // update UI state
+         
         const updated = { ...topicsBySubject };
 
         for (const subjectId in updated) {
@@ -106,7 +106,7 @@ export default function SubjectsSection({ userId }) {
                 (t) => t.id !== topicId,
             );
 
-            // optional cleanup if no topics left
+             
             if (updated[subjectId].length === 0) {
                 delete updated[subjectId];
             }
@@ -123,92 +123,78 @@ export default function SubjectsSection({ userId }) {
 
     return (
         <section
-            className="rounded-xl border p-5"
-            style={{ backgroundColor: "#FFFFFF", borderColor: "#D6CBBF" }}
+            className="rounded-3xl p-8 bg-[#F6F3ED] border border-[#D6CBBF] shadow-[0_25px_60px_rgba(0,0,0,0.06)]"
         >
-            <h2
-                className="text-lg font-semibold mb-4"
-                style={{ color: "#3A4F4B" }}
-            >
-                📚 Subjects
+            <h2 className="text-xl font-semibold text-[#3A4F4B] mb-6">
+                Subjects
             </h2>
 
-            {/* Add subject */}
-            <div className="flex gap-2 mb-4">
+                        <div className="flex gap-3 mb-6">
                 <input
                     value={subjectInput}
                     onChange={(e) => setSubjectInput(e.target.value)}
                     placeholder="Add subject"
-                    className="flex-1 border rounded p-2"
-                    style={{ borderColor: "#D6CBBF" }}
-                />
+                    className="flex-1 rounded-xl px-4 py-2   bg-white border border-[#D6CBBF]  focus:outline-none focus:ring-2 focus:ring-[#97B3AE]/40"            />
                 <button
                     onClick={addSubject}
-                    className="px-4 rounded text-white transition hover:opacity-90"
-                    style={{ backgroundColor: "#97B3AE" }}
-                >
+                    className="px-5 rounded-xl text-white font-medium bg-[#97B3AE] hover:scale-[1.03] transition-all duration-200 shadow"           >
                     Add
                 </button>
             </div>
 
-            <ul className="space-y-4">
+            <ul className="space-y-5">
                 {subjects.map((subject) => (
                     <li
                         key={subject.id}
-                        className="rounded-lg p-3"
-                        style={{ border: "1px solid #D6CBBF" }}
+                        className="bg-white/70 backdrop-blur-sm    rounded-2xl p-5    border border-[#D6CBBF]   hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)]   transition-all duration-300"
                     >
-                        {/* Subject header */}
-                        <div className="flex justify-between items-center mb-2">
-                            <h3
-                                className="font-medium"
-                                style={{ color: "#3A4F4B" }}
-                            >
+                                                <div className="flex justify-between items-center mb-3">
+                            <h3 className="font-semibold text-[#3A4F4B] text-lg">
                                 {subject.name}
                             </h3>
 
-                            <div className="flex gap-3 items-center">
+                            <div className="flex gap-3 items-center text-[#6B7C78]">
                                 <button
                                     onClick={() =>
                                         router.push(
                                             `/dashboard/topics/${subject.id}`,
                                         )
                                     }
-                                    title="Manage topics"
-                                    className="transition"
-                                    style={{ color: "#6B7C78" }}
+                                    className="hover:text-[#3A4F4B] transition"
                                 >
                                     <FiPlus size={18} />
                                 </button>
 
                                 <button
                                     onClick={() => deleteSubject(subject.id)}
-                                    title="Delete subject"
-                                    className="transition hover:text-red-600"
-                                    style={{ color: "#6B7C78" }}
+                                    className="hover:text-red-500 transition"
                                 >
                                     <FiTrash2 size={18} />
                                 </button>
                             </div>
                         </div>
 
-                        {/* Topics */}
-                        {topicsBySubject[subject.id]?.length > 0 ? (
-                            <ul className="space-y-1">
+                                                {topicsBySubject[subject.id]?.length > 0 ? (
+                            <ul className="space-y-2">
                                 {topicsBySubject[subject.id].map((topic) => (
                                     <li
                                         key={topic.id}
                                         className="flex justify-between items-center text-sm"
                                     >
-                                        <span style={{ color: "#3A4F4B" }}>
+                                        <span className="text-[#3A4F4B]">
                                             {topic.name}
                                         </span>
 
-                                        <div className="flex gap-2 items-center">
+                                        <div className="flex gap-3 items-center">
                                             <span
-                                                className={`px-2 py-0.5 rounded text-xs font-medium ${strengthBadge(
-                                                    topic.strength,
-                                                )}`}
+                                                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                    topic.strength === "weak"
+                                                        ? "bg-[#F2C3B9]/60 text-[#8A3B3B]"
+                                                        : topic.strength ===
+                                                            "medium"
+                                                          ? "bg-[#F0DDD6] text-[#9C7A3B]"
+                                                          : "bg-[#D2E0D3]/70 text-[#3A4F4B]"
+                                                }`}
                                             >
                                                 {topic.strength}
                                             </span>
@@ -217,8 +203,7 @@ export default function SubjectsSection({ userId }) {
                                                 onClick={() =>
                                                     deleteTopic(topic.id)
                                                 }
-                                                className="transition hover:text-red-600"
-                                                style={{ color: "#6B7C78" }}
+                                                className="text-[#6B7C78] hover:text-red-500 transition"
                                             >
                                                 <FiTrash2 size={14} />
                                             </button>
@@ -227,7 +212,7 @@ export default function SubjectsSection({ userId }) {
                                 ))}
                             </ul>
                         ) : (
-                            <p className="text-xs" style={{ color: "#6B7C78" }}>
+                            <p className="text-xs text-[#6B7C78]">
                                 No topics yet
                             </p>
                         )}

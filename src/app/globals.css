@@ -14,3 +14,58 @@ body {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
+
+
+/* Heatmap Base */
+.react-calendar-heatmap {
+  width: 100%;
+}
+
+/* Empty days */
+.react-calendar-heatmap .color-empty {
+  fill: #EDEBE7;
+}
+
+/* Very light study */
+.react-calendar-heatmap .color-scale-1 {
+  fill: #D2E0D3;
+}
+
+/* Medium study */
+.react-calendar-heatmap .color-scale-2 {
+  fill: #97B3AE;
+}
+
+/* Heavy study */
+.react-calendar-heatmap .color-scale-3 {
+  fill: #3A4F4B;
+}
+
+/* Rounded squares */
+.react-calendar-heatmap rect {
+  rx: 4;
+  ry: 4;
+  transition: fill 0.2s ease;
+}
+
+/* Month labels */
+.react-calendar-heatmap text {
+  fill: #6B7C78;
+  font-size: 12px;
+}
+
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.8s ease forwards;
+}
