@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }) {
   return (
     <div
       className="flex min-h-screen 
-      bg-gradient-to-br from-[#f8dfd5] via-[#eacaea] to-[#ffffff]"
+      bg-gradient-to-br from-[#f8dfd5] via-[#e1dcd4] to-[#D2E0D3]/30"
     >
       <Navbar />
 

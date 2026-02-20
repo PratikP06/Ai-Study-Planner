@@ -34,7 +34,7 @@ export default function HomePage() {
             </a>
 
             <a
-              href="/planner"
+              href="/dashboard/ai"
               className="px-7 py-3 rounded-xl font-medium border border-[#D6CBBF] text-[#3A4F4B] hover:bg-white/40 transition-all duration-200"
             >
               View Planner
