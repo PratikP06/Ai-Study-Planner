@@ -73,7 +73,7 @@ export default function AIPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[#F0EEEA]">
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f8dfd5] via-[#e1dcd4] to-[#D2E0D3]/30">
                 <p className="text-sm text-[#6B7C78]">
                     Generating your calm study plan…
                 </p>
