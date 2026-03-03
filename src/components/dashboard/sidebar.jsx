@@ -13,6 +13,7 @@ import {
     Timer,
     ChevronLeft,
     ChevronRight,
+    Notebook   
 } from "lucide-react";
 
 export default function Sidebar({ collapsed, setCollapsed, user, name }) {
@@ -30,6 +31,7 @@ export default function Sidebar({ collapsed, setCollapsed, user, name }) {
         { name: "Focus", href: "/dashboard/focus", icon: Timer },
         { name: "Analytics", href: "/dashboard/analytics", icon: BarChart2 },
         { name: "AI", href: "/dashboard/ai", icon: Sparkles },
+        { name: "Notes", href: "/dashboard/notes", icon: Notebook    },
     ];
 
     const firstLetter = name?.[0]?.toUpperCase() || "U";
@@ -95,9 +97,7 @@ export default function Sidebar({ collapsed, setCollapsed, user, name }) {
                                     <div className="px-4 pb-6">
                 {!collapsed ? (
                     <div
-                        className="flex items-center justify-between gap-4 p-3 rounded-2xl
-      bg-white/20 backdrop-blur-sm border border-white/30
-      hover:bg-white/30 transition-all duration-300"
+                        className="flex items-center justify-between gap-4 p-3 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300"
                     >
                                                 <div className="flex items-center gap-4 min-w-0">
                             <div className="w-11 h-11 rounded-full bg-[#3A4F4B] text-white flex items-center justify-center font-semibold text-lg shadow">

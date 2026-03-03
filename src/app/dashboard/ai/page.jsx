@@ -86,7 +86,7 @@ export default function AIPage() {
 
             <div className="max-w-5xl mx-auto space-y-8">
                                 <div
-                    className="bg-[#F6F3ED] rounded-3xl p-6 
+                    className="bg-[#f6f3ed] rounded-3xl p-6 
         shadow-[0_15px_40px_rgba(0,0,0,0.06)] 
         flex flex-col md:flex-row md:items-center md:justify-between gap-6"
                 >

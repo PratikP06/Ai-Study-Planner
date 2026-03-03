@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { askGemini } from "@/lib/ai/gemini";
+import { askGroq } from "@/lib/ai/groq";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -26,7 +26,6 @@ export async function POST(req) {
       );
     }
 
-     
     const now = new Date(
       new Date().toLocaleString("en-US", {
         timeZone: "Asia/Kolkata",
@@ -43,7 +42,6 @@ export async function POST(req) {
 
     const currentTimeISO = now.toISOString();
 
-     
     const yesterday = new Date(now);
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayDate = yesterday.toISOString().slice(0, 10);
@@ -55,7 +53,6 @@ export async function POST(req) {
       .eq("plan_date", yesterdayDate)
       .single();
 
-     
     const { data: existingPlan } = await supabase
       .from("plans")
       .select("id, content, created_at")
@@ -63,7 +60,6 @@ export async function POST(req) {
       .eq("plan_date", today)
       .single();
 
-     
     if (existingPlan && !regenerate) {
       return NextResponse.json({
         plan: existingPlan.content,
@@ -72,12 +68,10 @@ export async function POST(req) {
       });
     }
 
-     
     if (existingPlan && regenerate) {
       await supabase.from("plans").delete().eq("id", existingPlan.id);
     }
 
-     
     const prompt = `
 You are an expert study coach and AI planner.
 
@@ -101,12 +95,11 @@ ${exams.map((e) => `- ${e.subject}: exam in ${e.daysLeft} days`).join("\n")}
 Yesterday:
 ${yesterdayPlan?.content || "No plan yesterday."}
 
-Return structured time-based schedule with improvements over yesterday.
+Return a structured time-based schedule , topics to learn and how to learn 
 `;
 
-    const plan = await askGemini(prompt);
+    const plan = await askGroq(prompt);
 
-     
     const { data: inserted } = await supabase
       .from("plans")
       .insert({

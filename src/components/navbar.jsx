@@ -41,9 +41,7 @@ export default function Navbar() {
       ${isDashboard ? "md:hidden" : ""}`}
     >
       <div
-        className="max-w-6xl mx-auto h-14 sm:h-16 rounded-3xl 
-        flex items-center justify-between px-5 sm:px-8
-        backdrop-blur-md shadow-[0_8px_25px_rgba(0,0,0,0.05)]"
+        className="max-w-6xl mx-auto h-14 sm:h-16 rounded-3xl flex items-center justify-between px-5 sm:px-8 backdrop-blur-md shadow-[0_8px_25px_rgba(0,0,0,0.05)]"
         style={{
           backgroundColor: "rgba(240,238,234,0.85)",
         }}
