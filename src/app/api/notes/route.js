@@ -2,6 +2,13 @@ export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
 import { askGroq } from "@/lib/ai/groq";
+import { createClient } from "@supabase/supabase-js";
+
+// Use service role key here so we can bypass RLS for cache lookups
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 export async function POST(req) {
   try {
@@ -10,11 +17,39 @@ export async function POST(req) {
     if (!topic || !level) {
       return NextResponse.json(
         { error: "Topic and level required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-let prompt = `
+    // -------------------
+    // 1. Check DB Cache
+    // -------------------
+    const { data: cached } = await supabase
+      .from("notes")
+      .select("content")
+      .ilike("topic", topic.trim())   // case-insensitive match
+      .ilike("level", level.trim())
+      .eq("mode", mode)
+      .limit(1)
+      .single();
+
+    if (cached) {
+      // Cache hit — save a copy for this user and return
+      await supabase.from("notes").insert({
+        user_id: userId,
+        topic: topic.trim(),
+        level: level.trim(),
+        mode,
+        content: cached.content,
+      });
+
+      return NextResponse.json({ notes: cached.content, fromCache: true });
+    }
+
+    // -------------------
+    // 2. Cache Miss — Generate with AI
+    // -------------------
+    let prompt = `
 You are an expert academic tutor and technical writer.
 
 Generate comprehensive ${level}-level study notes on: "${topic}"
@@ -61,8 +96,9 @@ Step-by-step walkthrough of a representative problem or use case.
 ## References
 Standard textbooks or resources for ${level} level
 `;
-if (mode === "notes+diagram") {
-  prompt += `
+
+    if (mode === "notes+diagram") {
+      prompt += `
 
 ## 📊 Diagram Instructions
 
@@ -102,15 +138,33 @@ graph TD
     Effectors -->|output/action| Env
 \`\`\`
 
-Make the diagram specific to "${topic}" — not generic. 
+Make the diagram specific to "${topic}" — not generic.
+
 Model it after how this topic's diagram appears in a university textbook.
 Use the actual component names from the topic (not placeholders like A, B, C).
 Return ONLY clean Markdown. No extra explanation outside the structure.
 `;
-}
+    }
+
     const notes = await askGroq(prompt);
 
-    return NextResponse.json({ notes });
+    // -------------------
+    // 3. Save to DB
+    // -------------------
+    const { error } = await supabase.from("notes").insert({
+      user_id: userId,
+      topic: topic.trim(),
+      level: level.trim(),
+      mode,
+      content: notes,
+    });
+
+    if (error) {
+      console.error("Failed to save notes:", error.message);
+    }
+
+    return NextResponse.json({ notes, fromCache: false });
+
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: err.message }, { status: 500 });
