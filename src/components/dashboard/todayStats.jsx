@@ -35,11 +35,16 @@ export default function TodayFocusCard({ userId }) {
   };
 
   return (
-    <div className="bg-[#F6F3ED] rounded-3xl p-6 border border-[#D6CBBF] shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
-      <p className="text-sm text-[#6B7C78] mb-2">Today’s focus</p>
-      <h2 className="text-3xl font-semibold text-[#3A4F4B]">
-        {format(seconds)}
-      </h2>
+    <div className="bg-[#1c1b1b] rounded-2xl p-8 border border-white/5 glow-border-resting glow-border-hover transition-all duration-300">
+      <span className="material-symbols-outlined text-neutral-500 text-2xl mb-4 block">timer</span>
+      <div>
+        <p className="text-4xl font-[family-name:var(--font-space-grotesk)] font-bold text-white">
+          {format(seconds)}
+        </p>
+        <p className="font-[family-name:var(--font-inter)] text-[10px] uppercase tracking-widest text-neutral-500 mt-1">
+          Today&apos;s Focus
+        </p>
+      </div>
     </div>
   );
 }

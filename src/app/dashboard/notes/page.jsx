@@ -20,7 +20,7 @@ function MermaidChart({ chart }) {
       try {
         mermaid.initialize({
           startOnLoad: false,
-          theme: "default",
+          theme: "dark",
           securityLevel: "loose",
         });
 
@@ -46,7 +46,7 @@ function MermaidChart({ chart }) {
   }, [chart]);
 
   return (
-    <div className="my-8 bg-white p-6 rounded-xl shadow-sm overflow-x-auto">
+    <div className="my-8 bg-[#0e0e0e] p-6 rounded-xl border border-white/5 overflow-x-auto">
       <div ref={ref} />
     </div>
   );
@@ -172,8 +172,8 @@ export default function NotesPage() {
 
   if (initialLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#f8dfd5] via-[#e1dcd4] to-[#D2E0D3]/30 flex items-center justify-center">
-        <p className="text-[#3A4F4B] text-sm animate-pulse">
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-neutral-500 text-sm animate-pulse">
           Loading your notes...
         </p>
       </div>
@@ -181,25 +181,30 @@ export default function NotesPage() {
   }
 
   return (
-    <div className="px-6 sm:px-10 py-12 bg-gradient-to-br from-[#f8dfd5] via-[#e1dcd4] to-[#D2E0D3]/30 min-h-screen">
+    <div className="px-6 sm:px-10 py-12">
       <div className="max-w-5xl mx-auto space-y-8">
 
         {/* HEADER */}
-        <div className="bg-[#f6f3ed] rounded-3xl p-6 shadow-[0_15px_40px_rgba(0,0,0,0.06)] flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#3A4F4B]">
-            AI Notes Generator
-          </h1>
+        <div className="bg-[#1c1b1b] rounded-2xl p-6 border border-white/5 glow-border-resting flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-2">
+            <div className="font-[family-name:var(--font-inter)] text-[10px] uppercase tracking-[0.3em] text-neutral-500">
+              Knowledge Engine
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-[family-name:var(--font-space-grotesk)] font-bold tracking-tight text-white text-glow">
+              AI Notes Generator
+            </h1>
+          </div>
           <button
             onClick={() => router.push("/notes-history")}
-            className="px-5 py-2.5 rounded-full text-sm bg-[#97B3AE] text-white hover:opacity-90 transition"
+            className="px-6 py-3 rounded-full text-sm font-bold bg-white text-[#1a1c1c] hover:shadow-[0_0_15px_rgba(255,255,255,0.12)] transition-all self-start md:self-auto"
           >
             View History
           </button>
         </div>
 
         {/* FORM */}
-        <div className="bg-[#F6F3ED] rounded-3xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.06)]">
-          <h2 className="text-lg font-semibold mb-6 text-[#3A4F4B]">
+        <div className="bg-[#1c1b1b] rounded-2xl p-8 border border-white/5 glow-border-resting">
+          <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold mb-6 text-white">
             Generate Notes
           </h2>
 
@@ -209,19 +214,19 @@ export default function NotesPage() {
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="Enter topic (e.g. Binary Search Tree)"
-              className="w-full rounded-xl px-4 py-3 bg-white border border-[#E2DAD0] text-[#3A4F4B] focus:outline-none focus:ring-2 focus:ring-[#97B3AE]"
+              className="w-full rounded-xl px-4 py-3 bg-[#0e0e0e] border border-white/10 text-[#e5e2e1] placeholder:text-neutral-600 outline-none focus:ring-1 focus:ring-white/30 transition-all"
             />
             <input
               type="text"
               value={level}
               onChange={(e) => setLevel(e.target.value)}
               placeholder="Level (e.g. B.Tech, Class 12)"
-              className="w-full rounded-xl px-4 py-3 bg-white border border-[#E2DAD0] text-[#3A4F4B] focus:outline-none focus:ring-2 focus:ring-[#97B3AE]"
+              className="w-full rounded-xl px-4 py-3 bg-[#0e0e0e] border border-white/10 text-[#e5e2e1] placeholder:text-neutral-600 outline-none focus:ring-1 focus:ring-white/30 transition-all"
             />
             <select
               value={mode}
               onChange={(e) => setMode(e.target.value)}
-              className="w-full rounded-xl px-4 py-3 bg-white border border-[#E2DAD0] text-[#3A4F4B] focus:outline-none focus:ring-2 focus:ring-[#97B3AE]"
+              className="w-full rounded-xl px-4 py-3 bg-[#0e0e0e] border border-white/10 text-[#e5e2e1] outline-none focus:ring-1 focus:ring-white/30 transition-all"
             >
               <option value="notes">Notes Only</option>
               <option value="notes+diagram">Notes + Diagram</option>
@@ -231,7 +236,7 @@ export default function NotesPage() {
               <button
                 onClick={generateNotes}
                 disabled={loading}
-                className="px-5 py-3 rounded-xl text-sm bg-[#97B3AE] text-white hover:opacity-90 transition disabled:opacity-60"
+                className="px-6 py-3 rounded-full text-sm font-bold bg-white text-[#1a1c1c] hover:shadow-[0_0_15px_rgba(255,255,255,0.12)] transition-all disabled:opacity-50"
               >
                 {loading ? "Generating..." : "Generate Notes"}
               </button>
@@ -240,7 +245,7 @@ export default function NotesPage() {
                 <button
                   onClick={downloadAsPDF}
                   disabled={downloading}
-                  className="px-5 py-3 rounded-xl text-sm bg-[#97B3AE] text-white hover:opacity-90 transition disabled:opacity-60"
+                  className="px-6 py-3 rounded-full text-sm font-medium border border-white/10 text-neutral-400 hover:text-white hover:bg-white/5 transition-all disabled:opacity-50"
                 >
                   {downloading ? "Downloading..." : "Download as PDF"}
                 </button>
@@ -248,7 +253,7 @@ export default function NotesPage() {
             </div>
 
             {error && (
-              <p className="text-sm text-red-500 mt-2 text-center">{error}</p>
+              <p className="text-sm text-red-400 mt-2 text-center">{error}</p>
             )}
           </div>
         </div>
@@ -257,11 +262,11 @@ export default function NotesPage() {
         {notes && (
           <div
             ref={notesRef}
-            className="bg-[#F6F3ED] rounded-3xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.06)]"
+            className="bg-[#1c1b1b] rounded-2xl p-8 border border-white/5 glow-border-resting"
           >
             {/* Cache badge */}
             {fromCache && (
-              <div className="mb-6 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#97B3AE]/20 text-[#3A4F4B] text-xs">
+              <div className="mb-6 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-neutral-400 text-xs border border-white/5">
                 ⚡ Loaded from cache
               </div>
             )}
@@ -269,22 +274,22 @@ export default function NotesPage() {
             <ReactMarkdown
               components={{
                 h1: ({ children }) => (
-                  <h1 className="text-3xl font-bold mb-6 text-[#2F3E46]">
+                  <h1 className="text-3xl font-bold mb-6 text-white font-[family-name:var(--font-space-grotesk)]">
                     {children}
                   </h1>
                 ),
                 h2: ({ children }) => (
-                  <h2 className="text-xl font-semibold mt-8 mb-4 text-[#3A4F4B] border-b border-[#E2DAD0] pb-2">
+                  <h2 className="text-xl font-semibold mt-8 mb-4 text-white border-b border-white/10 pb-2">
                     {children}
                   </h2>
                 ),
                 h3: ({ children }) => (
-                  <h3 className="text-lg font-semibold mt-6 mb-3 text-[#3A4F4B]">
+                  <h3 className="text-lg font-semibold mt-6 mb-3 text-white">
                     {children}
                   </h3>
                 ),
                 p: ({ children }) => (
-                  <p className="text-[15px] leading-7 mb-4 text-[#3A4F4B]">
+                  <p className="text-[15px] leading-7 mb-4 text-[#c6c6c6]">
                     {children}
                   </p>
                 ),
@@ -292,12 +297,12 @@ export default function NotesPage() {
                   <ul className="mb-4 space-y-1 pl-2">{children}</ul>
                 ),
                 li: ({ children }) => (
-                  <li className="text-sm leading-6 text-[#3A4F4B] pl-3 border-l-2 border-[#97B3AE]">
+                  <li className="text-sm leading-6 text-[#c6c6c6] pl-3 border-l-2 border-white/20">
                     {children}
                   </li>
                 ),
                 strong: ({ children }) => (
-                  <strong className="font-semibold text-[#3A4F4B]">
+                  <strong className="font-semibold text-white">
                     {children}
                   </strong>
                 ),

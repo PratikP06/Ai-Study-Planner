@@ -7,18 +7,7 @@ import { supabase } from "@/lib/client";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/dashboard/sidebar";
 import MobileNav from "@/components/dashboard/mobilenav";
-import { Sora } from "next/font/google";
-import { Source_Serif_4 } from "next/font/google";
 
-const sora = Sora({
-  subsets: ["latin"],
-  variable: "--font-sora",
-});
-
-const serif = Source_Serif_4({
-  subsets: ["latin"],
-  variable: "--font-serif",
-});
 export default function DashboardLayout({ children }) {
   const router = useRouter();
 
@@ -57,8 +46,7 @@ export default function DashboardLayout({ children }) {
   if (loading) return null;
 
   return (
-    <div
-      className={`${sora.variable} ${serif.variable} flex min-h-screen bg-gradient-to-br from-[#f8dfd5] via-[#e1dcd4] to-[#D2E0D3]/30`}>
+    <div className="flex min-h-screen bg-[#131313]">
       <Navbar />
 
       <Sidebar

@@ -6,18 +6,19 @@ export default function StartFocusCard() {
   const router = useRouter();
 
   return (
-    <div className="rounded-3xl p-6 border border-[#D6CBBF] bg-gradient-to-br from-[#97B3AE] to-[#8FAFA8] text-white shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
-      <h2 className="text-lg font-semibold">Ready to focus?</h2>
-
-      <p className="text-sm mt-2 opacity-90">
-        Enter focus mode and start studying
+    <div className="relative overflow-hidden bg-[#2a2a2a] rounded-2xl p-8 border border-white/5 group glow-border-resting">
+      <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />
+      <h3 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-white mb-4">
+        Deep Focus
+      </h3>
+      <p className="text-neutral-500 text-sm mb-8 leading-relaxed">
+        Activate focus mode to eliminate distractions and start studying.
       </p>
-
       <button
         onClick={() => router.push("/dashboard/focus")}
-        className="mt-5 px-5 py-2.5 rounded-xl bg-white text-[#3A4F4B] font-medium shadow-sm hover:scale-[1.02] transition-all duration-200"
+        className="w-full bg-white text-[#1a1c1c] py-4 rounded-full font-[family-name:var(--font-inter)] font-bold text-xs tracking-[0.2em] uppercase hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] transition-all"
       >
-        Start Focus
+        Enter Focus Mode
       </button>
     </div>
   );

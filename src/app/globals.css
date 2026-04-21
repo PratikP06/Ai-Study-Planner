@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+@theme {
+  /* ── Stitch "Luminescent Monolith" Color Tokens ── */
+  --color-bg-base: #131313;
+  --color-surface: #131313;
+  --color-surface-dim: #131313;
+  --color-surface-low: #1c1b1b;
+  --color-surface-container: #201f1f;
+  --color-surface-high: #2a2a2a;
+  --color-surface-highest: #353534;
+  --color-surface-lowest: #0e0e0e;
+  --color-surface-bright: #3a3939;
+  --color-on-surface: #e5e2e1;
+  --color-on-surface-variant: #c6c6c6;
+  --color-outline: #919191;
+  --color-outline-variant: #474747;
+
+  /* ── Font Families (set by next/font CSS vars) ── */
+  --font-headline: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  --font-body: var(--font-manrope), "Manrope", sans-serif;
+  --font-label: var(--font-inter), "Inter", sans-serif;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -15,46 +37,108 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* ── Glow Utility Classes (Stitch Design System) ── */
 
-/* Heatmap Base */
+.glow-border-resting {
+  box-shadow: inset 0 0 0 1px rgba(71, 71, 71, 0.2);
+}
+
+.glow-border-hover:hover {
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.08),
+              0 0 12px rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+.text-glow-headline {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+}
+
+.timer-glow {
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+}
+
+.glass-panel {
+  background: rgba(28, 27, 27, 0.6);
+  backdrop-filter: blur(24px);
+}
+
+.monolith-blur {
+  backdrop-filter: blur(24px);
+}
+
+.ghost-border {
+  border: 1px solid rgba(71, 71, 71, 0.2);
+}
+
+.active-glow {
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+}
+
+.glow-border-active:hover {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15), 0 0 12px rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.primary-cta-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #d4d4d4 100%);
+}
+
+.premium-input:focus {
+  outline: none;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.glow-card {
+  box-shadow: 0 0 20px 0px rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease-out;
+}
+.glow-card:hover {
+  box-shadow: 0 0 25px 0px rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #d4d4d4 100%);
+}
+
+/* ── Heatmap (Dark Theme) ── */
 .react-calendar-heatmap {
   width: 100%;
 }
 
-/* Empty days */
 .react-calendar-heatmap .color-empty {
-  fill: #EDEBE7;
+  fill: #1c1b1b;
 }
 
-/* Very light study */
 .react-calendar-heatmap .color-scale-1 {
-  fill: #D2E0D3;
+  fill: #2a2a2a;
 }
 
-/* Medium study */
 .react-calendar-heatmap .color-scale-2 {
-  fill: #97B3AE;
+  fill: #474747;
 }
 
-/* Heavy study */
 .react-calendar-heatmap .color-scale-3 {
-  fill: #3A4F4B;
+  fill: #e5e2e1;
 }
 
-/* Rounded squares */
 .react-calendar-heatmap rect {
   rx: 4;
   ry: 4;
   transition: fill 0.2s ease;
 }
 
-/* Month labels */
 .react-calendar-heatmap text {
-  fill: #6B7C78;
+  fill: #919191;
   font-size: 12px;
 }
 
-
+/* ── Animations ── */
 @keyframes fadeUp {
   from {
     opacity: 0;

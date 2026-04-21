@@ -33,11 +33,8 @@ export default function MobileNav() {
   return (
     <nav
       className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-md
-      backdrop-blur-xl rounded-3xl border z-50 md:hidden"
-      style={{
-        backgroundColor: "rgba(246,243,237,0.9)",
-        borderColor: "#D6CBBF",
-      }}
+      bg-neutral-950/80 backdrop-blur-xl rounded-2xl border border-white/10
+      shadow-[0_0_20px_rgba(255,255,255,0.03)] z-50 md:hidden"
     >
       <div className="flex justify-around py-3">
         {navItems.map((item) => {
@@ -48,14 +45,13 @@ export default function MobileNav() {
             <Link
               key={item.name}
               href={item.href}
-              className="flex flex-col items-center text-xs transition-all duration-200"
-              style={{
-                color: isActive ? "#97B3AE" : "#6B7C78",
-              }}
+              className={`flex flex-col items-center text-xs transition-all duration-200 ${
+                isActive ? "text-white" : "text-neutral-500"
+              }`}
             >
               <div
                 className={`p-2 rounded-xl transition ${
-                  isActive ? "bg-[#97B3AE]/15" : ""
+                  isActive ? "bg-white/10 shadow-[0_0_8px_rgba(255,255,255,0.05)]" : ""
                 }`}
               >
                 <Icon size={20} />

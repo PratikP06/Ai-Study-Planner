@@ -36,18 +36,16 @@ export default function FocusStreakCard({ userId }) {
   }, [userId]);
 
   return (
-    <div className="bg-[#F6F3ED] rounded-3xl p-6 border border-[#D6CBBF] shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
-      <p className="text-sm text-[#6B7C78] mb-4">Focus streak</p>
-
-      <div className="flex items-center gap-4">
-        <div className="p-3 rounded-2xl bg-[#D2E0D3]/60">
-          <Flame size={22} className="text-[#3A4F4B]" />
-        </div>
-
-        <h2 className="text-3xl font-semibold text-[#3A4F4B]">
-          {streak} day{streak === 1 ? "" : "s"}
-        </h2>
+    <div className="bg-[#1c1b1b] rounded-2xl p-8 border border-white/5 glow-border-resting glow-border-hover transition-all duration-300">
+      <div className="bg-white/5 p-3 rounded-full w-fit mb-4">
+        <Flame size={22} className="text-white/80" />
       </div>
+      <p className="text-4xl font-[family-name:var(--font-space-grotesk)] font-bold text-white">
+        {streak} day{streak === 1 ? "" : "s"}
+      </p>
+      <p className="font-[family-name:var(--font-inter)] text-[10px] uppercase tracking-widest text-neutral-500 mt-1">
+        Current Streak
+      </p>
     </div>
   );
 }

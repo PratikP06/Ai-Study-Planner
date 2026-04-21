@@ -84,18 +84,18 @@ export default function ExamsSection({ userId }) {
   };
 
   return (
-    <section className="rounded-3xl p-5 sm:p-8 bg-[#F6F3ED] border border-[#D6CBBF] shadow-[0_25px_60px_rgba(0,0,0,0.06)]">
+    <section className="rounded-2xl p-5 sm:p-8 bg-[#1c1b1b] border border-white/5 glow-border-resting">
 
-      <h2 className="text-xl font-semibold text-[#3A4F4B] mb-6">
+      <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-white mb-6">
         Exams
       </h2>
 
-      {/* Responsive Input Row */}
+      {/* Input Row */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <select
           value={subjectId}
           onChange={(e) => setSubjectId(e.target.value)}
-          className="w-full rounded-xl px-4 py-2 bg-white border border-[#D6CBBF]"
+          className="w-full rounded-xl px-4 py-2 bg-[#0e0e0e] border border-white/10 text-[#e5e2e1] outline-none focus:ring-1 focus:ring-white/30 transition-all"
         >
           <option value="">Select subject</option>
           {subjects.map((s) => (
@@ -109,12 +109,12 @@ export default function ExamsSection({ userId }) {
           type="date"
           value={examDate}
           onChange={(e) => setExamDate(e.target.value)}
-          className="w-full rounded-xl px-4 py-2 bg-white border border-[#D6CBBF]"
+          className="w-full rounded-xl px-4 py-2 bg-[#0e0e0e] border border-white/10 text-[#e5e2e1] outline-none focus:ring-1 focus:ring-white/30 transition-all"
         />
 
         <button
   onClick={addExam}
-  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#97B3AE] text-white flex items-center justify-center hover:scale-[1.05] transition-all duration-200 shadow-sm"
+  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white text-[#1a1c1c] flex items-center justify-center hover:shadow-[0_0_12px_rgba(255,255,255,0.1)] transition-all duration-200"
 >
   <FiPlus size={18} />
 </button>
@@ -126,25 +126,25 @@ export default function ExamsSection({ userId }) {
           {exams.map((e) => (
             <li
               key={e.id}
-              className="bg-white/70 rounded-2xl p-4 sm:p-5 border border-[#D6CBBF] hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-300 flex flex-wrap justify-between items-center gap-3"
+              className="bg-[#0e0e0e]/70 rounded-xl p-4 sm:p-5 border border-white/5 hover:border-white/10 transition-all duration-300 flex flex-wrap justify-between items-center gap-3"
             >
               <div>
-                <p className="text-[#3A4F4B] font-medium">
+                <p className="text-white font-medium">
                   {e.subjects?.name}
                 </p>
-                <p className="text-xs text-[#6B7C78]">
+                <p className="text-xs text-neutral-500">
                   {new Date(e.exam_date).toDateString()}
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="px-4 py-1.5 rounded-full text-xs font-medium bg-[#97B3AE]/70 text-[#3A4F4B]">
+                <span className="px-4 py-1.5 rounded-full text-xs font-medium bg-white/10 text-neutral-300">
                   {getDaysLeft(e.exam_date)}
                 </span>
 
                 <button
                   onClick={() => deleteExam(e.id)}
-                  className="text-[#6B7C78] hover:text-red-500 transition"
+                  className="text-neutral-500 hover:text-red-400 transition"
                 >
                   <FiTrash2 size={16} />
                 </button>
@@ -153,7 +153,7 @@ export default function ExamsSection({ userId }) {
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-[#6B7C78]">
+        <p className="text-sm text-neutral-500">
           No upcoming exams
         </p>
       )}

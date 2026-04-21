@@ -75,20 +75,20 @@ export default function SubjectsSection({ userId }) {
   };
 
   return (
-    <section className="rounded-3xl p-5 sm:p-8 bg-[#F6F3ED] border border-[#D6CBBF] shadow-[0_25px_60px_rgba(0,0,0,0.06)]">
-      <h2 className="text-xl font-semibold text-[#3A4F4B] mb-6">Subjects</h2>
+    <section className="rounded-2xl p-5 sm:p-8 bg-[#1c1b1b] border border-white/5 glow-border-resting">
+      <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-white mb-6">Subjects</h2>
 
-      {/* Responsive Add Subject */}
+      {/* Add Subject */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <input
           value={subjectInput}
           onChange={(e) => setSubjectInput(e.target.value)}
           placeholder="Add subject"
-          className="w-full rounded-xl px-4 py-2 bg-white border border-[#D6CBBF] focus:outline-none focus:ring-2 focus:ring-[#97B3AE]/40"
+          className="w-full rounded-xl px-4 py-2 bg-[#0e0e0e] border border-white/10 text-[#e5e2e1] placeholder:text-neutral-600 outline-none focus:ring-1 focus:ring-white/30 transition-all"
         />
         <button
           onClick={addSubject}
-          className="w-full sm:w-auto px-5 py-2 rounded-xl text-white font-medium bg-[#97B3AE] hover:scale-[1.02] transition-all duration-200 shadow"
+          className="w-full sm:w-auto px-5 py-2 rounded-xl text-[#1a1c1c] font-bold bg-white hover:shadow-[0_0_12px_rgba(255,255,255,0.1)] transition-all duration-200"
         >
           Add
         </button>
@@ -98,24 +98,24 @@ export default function SubjectsSection({ userId }) {
         {subjects.map((subject) => (
           <li
             key={subject.id}
-            className="bg-white/70 rounded-2xl p-4 sm:p-5 border border-[#D6CBBF] hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-300"
+            className="bg-[#0e0e0e]/70 rounded-xl p-4 sm:p-5 border border-white/5 hover:border-white/10 transition-all duration-300"
           >
             <div className="flex flex-wrap justify-between items-center gap-3 mb-3">
-              <h3 className="font-semibold text-[#3A4F4B] text-lg">
+              <h3 className="font-semibold text-white text-lg">
                 {subject.name}
               </h3>
 
-              <div className="flex gap-3 items-center text-[#6B7C78]">
+              <div className="flex gap-3 items-center text-neutral-500">
                 <button
                   onClick={() => router.push(`/dashboard/topics/${subject.id}`)}
-                  className="hover:text-[#3A4F4B] transition"
+                  className="hover:text-white transition"
                 >
                   <FiPlus size={18} />
                 </button>
 
                 <button
                   onClick={() => deleteSubject(subject.id)}
-                  className="hover:text-red-500 transition"
+                  className="hover:text-red-400 transition"
                 >
                   <FiTrash2 size={18} />
                 </button>
@@ -129,16 +129,16 @@ export default function SubjectsSection({ userId }) {
                     key={topic.id}
                     className="flex flex-wrap justify-between items-center gap-2 text-sm"
                   >
-                    <span className="text-[#3A4F4B]">{topic.name}</span>
+                    <span className="text-neutral-300">{topic.name}</span>
 
                     <div className="flex gap-3 items-center">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium ${
                           topic.strength === "weak"
-                            ? "bg-[#F2C3B9]/60 text-[#8A3B3B]"
+                            ? "bg-red-400/15 text-red-400"
                             : topic.strength === "medium"
-                              ? "bg-[#F0DDD6] text-[#9C7A3B]"
-                              : "bg-[#D2E0D3]/70 text-[#2F5E4E]"
+                              ? "bg-amber-400/15 text-amber-400"
+                              : "bg-emerald-400/15 text-emerald-400"
                         }`}
                       >
                         {topic.strength}
@@ -146,7 +146,7 @@ export default function SubjectsSection({ userId }) {
 
                       <button
                         onClick={() => deleteTopic(topic.id)}
-                        className="text-[#6B7C78] hover:text-red-500 transition"
+                        className="text-neutral-500 hover:text-red-400 transition"
                       >
                         <FiTrash2 size={14} />
                       </button>
@@ -155,7 +155,7 @@ export default function SubjectsSection({ userId }) {
                 ))}
               </ul>
             ) : (
-              <p className="text-xs text-[#6B7C78]">No topics yet</p>
+              <p className="text-xs text-neutral-600">No topics yet</p>
             )}
           </li>
         ))}

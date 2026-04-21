@@ -29,59 +29,48 @@ export default function HistoryPage() {
     }, []);
 
     return (
-        <main
-            className="min-h-screen px-4 md:px-6 lg:px-8 py-8"
-            style={{ backgroundColor: "#F0EEEA" }}
-        >
+        <main className="min-h-screen px-4 md:px-6 lg:px-8 py-8">
             <div className="max-w-5xl mx-auto space-y-6">
-                                <header>
-                    <h1
-                        className="text-2xl font-semibold"
-                        style={{ color: "#3A4F4B" }}
-                    >
-                        📚 Study Plan History
+                {/* Header */}
+                <header className="space-y-3">
+                    <div className="font-[family-name:var(--font-inter)] text-[10px] uppercase tracking-[0.3em] text-neutral-500">
+                        Archive
+                    </div>
+                    <h1 className="font-[family-name:var(--font-space-grotesk)] text-3xl font-bold tracking-tight text-white text-glow">
+                        Study Plan History
                     </h1>
-                    <p className="mt-1 text-sm" style={{ color: "#6B7C78" }}>
+                    <p className="text-sm text-neutral-500">
                         Your previously generated study plans
                     </p>
                 </header>
 
-                                <button
+                {/* Back */}
+                <button
                     onClick={() => router.push("/dashboard")}
-                    className="text-sm font-medium transition hover:opacity-70"
-                    style={{ color: "#97B3AE" }}
+                    className="text-sm font-medium transition text-neutral-400 hover:text-white"
                 >
-                    ←  Dashboard
+                    ← Dashboard
                 </button>
+
                 <div className="space-y-4">
                     {plans.map((plan) => (
                         <Link
                             key={plan.id}
                             href={`/history/${plan.id}`}
-                            className="block rounded-xl border p-4 transition hover:bg-white/60"
-                            style={{
-                                borderColor: "#D6CBBF",
-                                backgroundColor: "#FFFFFF",
-                            }}
+                            className="block rounded-xl border border-white/5 p-5 transition-all duration-300 bg-[#1c1b1b] hover:border-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] glow-border-resting"
                         >
-                            <h2
-                                className="font-medium"
-                                style={{ color: "#3A4F4B" }}
-                            >
+                            <h2 className="font-medium text-white">
                                 📅 {new Date(plan.plan_date).toDateString()}
                             </h2>
 
-                            <p
-                                className="text-sm mt-2 line-clamp-2"
-                                style={{ color: "#6B7C78" }}
-                            >
+                            <p className="text-sm mt-2 line-clamp-2 text-neutral-500">
                                 {plan.content.slice(0, 160)}…
                             </p>
                         </Link>
                     ))}
 
                     {plans.length === 0 && (
-                        <p className="text-sm" style={{ color: "#6B7C78" }}>
+                        <p className="text-sm text-neutral-500">
                             No study plans yet.
                         </p>
                     )}

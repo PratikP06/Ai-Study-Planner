@@ -28,35 +28,37 @@ export default function SubjectTimerCard({
 
   return (
     <div
-      className="flex flex-col sm:flex-row sm:items-center justify-between gap-6
-                 rounded-2xl
-                 bg-[#F6F3ED]
-                 shadow-[0_10px_30px_rgba(0,0,0,0.05)]
-                 px-6 py-5 transition-all duration-300"
+      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-6
+                 rounded-xl
+                 bg-[#0e0e0e]
+                 border ${isActive ? "border-white/20 shadow-[0_0_12px_rgba(255,255,255,0.04)]" : "border-white/5"}
+                 px-6 py-5 transition-all duration-300`}
     >
-            <div className="space-y-2">
-        <h3 className="font-semibold text-[#3A4F4B] text-lg">
+      {/* Subject info */}
+      <div className="space-y-2">
+        <h3 className="font-semibold text-white text-lg">
           {subject.name}
         </h3>
 
-        <p className="text-sm text-[#6B7C78] flex items-center gap-2">
-          <FaStopwatch className="opacity-70 text-[#97B3AE]" />
+        <p className="text-sm text-neutral-500 flex items-center gap-2">
+          <FaStopwatch className="opacity-70 text-white/30" />
           Today:
-          <span className="font-medium text-[#3A4F4B]">
+          <span className="font-medium text-white">
             {formatTime(displayTime)}
           </span>
         </p>
       </div>
 
-            <div className="flex justify-end">
+      {/* Play/Pause */}
+      <div className="flex justify-end">
         {isActive ? (
           <button
             onClick={stopSession}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl
-                       bg-[#F2C3B9]/60
-                       text-[#3A4F4B]
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full
+                       bg-red-400/15 border border-red-400/20
+                       text-red-400
                        font-medium text-sm
-                       hover:bg-[#F2C3B9]/80
+                       hover:bg-red-400/25
                        transition-all duration-200"
           >
             <FaPause size={14} />
@@ -65,11 +67,11 @@ export default function SubjectTimerCard({
         ) : (
           <button
             onClick={() => startSession(subject.id)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl
-                       bg-[#97B3AE]/40
-                       text-[#3A4F4B]
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full
+                       bg-white/10 border border-white/10
+                       text-white
                        font-medium text-sm
-                       hover:bg-[#97B3AE]/60
+                       hover:bg-white/20 hover:shadow-[0_0_12px_rgba(255,255,255,0.06)]
                        transition-all duration-200"
           >
             <FaPlay size={14} />

@@ -37,30 +37,28 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 px-4 pt-4
+      className={`fixed top-0 left-0 right-0 z-50
       ${isDashboard ? "md:hidden" : ""}`}
     >
-      <div
-        className="max-w-6xl mx-auto h-14 sm:h-16 rounded-3xl flex items-center justify-between px-5 sm:px-8 backdrop-blur-md shadow-[0_8px_25px_rgba(0,0,0,0.05)]"
-        style={{
-          backgroundColor: "rgba(240,238,234,0.85)",
-        }}
+      <nav
+        className="sticky top-0 w-full bg-neutral-950/40 backdrop-blur-2xl border-b border-white/10
+          shadow-[0_0_20px_0px_rgba(255,255,255,0.03)] flex justify-between items-center px-8 h-16 sm:h-20"
       >
         <Link
           href={user ? "/dashboard" : "/"}
-          className="text-xl sm:text-2xl font-semibold tracking-wide text-[#3A4F4B]"
+          className="text-xl sm:text-2xl font-bold tracking-tighter text-white font-[family-name:var(--font-space-grotesk)]"
         >
-          FlowState
+          StudyPlanner
         </Link>
 
-        <nav className="flex items-center gap-4 sm:gap-6 text-sm">
+        <nav className="flex items-center gap-4 sm:gap-8 text-sm">
           {user !== undefined &&
             (user ? (
               <>
                 {!isDashboard && (
                   <Link
                     href="/dashboard"
-                    className="hidden md:block text-[#6B7C78] hover:opacity-80 transition"
+                    className="hidden md:block text-neutral-400 font-medium hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] transition-all duration-300"
                   >
                     Dashboard
                   </Link>
@@ -68,30 +66,31 @@ export default function Navbar() {
 
                 <button
                   onClick={logout}
-                  className="p-2 rounded-full hover:bg-[#97B3AE]/15 transition"
+                  className="p-2 rounded-full hover:bg-white/10 transition"
                 >
-                  <FiLogOut size={20} className="text-[#3A4F4B]" />
+                  <FiLogOut size={18} className="text-neutral-400 hover:text-white" />
                 </button>
               </>
             ) : (
               <>
                 <Link
                   href="/login"
-                  className="text-[#6B7C78] hover:opacity-80 transition"
+                  className="text-neutral-400 font-medium hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] transition-all duration-300"
                 >
-                  Login
+                  Sign In
                 </Link>
 
                 <Link
                   href="/signup"
-                  className="hidden sm:block px-5 py-2 rounded-full text-sm font-medium bg-[#97B3AE] text-white"
+                  className="hidden sm:block px-6 py-2.5 rounded-full text-sm font-bold tracking-wider uppercase
+                    bg-white text-[#1a1c1c] hover:scale-105 active:scale-95 transition-all duration-200"
                 >
                   Get Started
                 </Link>
               </>
             ))}
         </nav>
-      </div>
+      </nav>
     </header>
   );
 }

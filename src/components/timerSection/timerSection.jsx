@@ -34,7 +34,7 @@ export default function TimerSection({ subjects, userId }) {
 
   return (
     <div className="space-y-5">
-      <h2 className="text-lg font-semibold text-[#3A4F4B]">
+      <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-white">
         Study Timer
       </h2>
 

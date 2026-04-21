@@ -49,8 +49,8 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F0EEEA]">
-        <p className="text-sm text-[#6B7C78]">Loading analytics…</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-sm text-neutral-500 animate-pulse">Loading analytics…</p>
       </div>
     );
   }
@@ -90,14 +90,16 @@ export default function AnalyticsPage() {
   return (
     <div className="px-6 sm:px-10 py-12">
 
-      <div className="max-w-6xl mx-auto space-y-16">
-        <header className="space-y-2">
-          <h1 className="flex items-center gap-3 text-2xl sm:text-3xl font-semibold text-[#3A4F4B]">
+      <div className="max-w-6xl mx-auto space-y-12">
+        <header className="space-y-3">
+          <div className="font-[family-name:var(--font-inter)] text-[10px] uppercase tracking-[0.3em] text-neutral-500">
+            Performance Metrics
+          </div>
+          <h1 className="flex items-center gap-3 text-3xl sm:text-4xl font-[family-name:var(--font-space-grotesk)] font-bold tracking-tight text-white text-glow">
             Analytics
-            <BarChart3 size={24} className="text-[#97B3AE]" />
+            <BarChart3 size={24} className="text-white/40" />
           </h1>
-
-          <p className="text-sm text-[#6B7C78]">
+          <p className="text-sm text-neutral-500">
             Your study insights for {currentYear}
           </p>
         </header>
@@ -109,10 +111,9 @@ export default function AnalyticsPage() {
         </section>
 
         <section
-          className="bg-[#F6F3ED] rounded-3xl p-8 
-        shadow-[0_15px_40px_rgba(0,0,0,0.06)]"
+          className="bg-[#1c1b1b] rounded-2xl p-8 border border-white/5 glow-border-resting"
         >
-          <h2 className="text-lg font-semibold text-[#3A4F4B] mb-6">
+          <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-white mb-6">
             Study Heatmap
           </h2>
 
@@ -146,11 +147,12 @@ export default function AnalyticsPage() {
               <HeatmapTooltip
                 id="heatmap-tooltip"
                 style={{
-                  backgroundColor: "#3A4F4B",
-                  color: "#fff",
+                  backgroundColor: "#1c1b1b",
+                  color: "#e5e2e1",
                   borderRadius: "12px",
                   padding: "8px 12px",
                   fontSize: "12px",
+                  border: "1px solid rgba(255,255,255,0.1)",
                 }}
               />
             </div>
@@ -164,11 +166,10 @@ export default function AnalyticsPage() {
 function StatCard({ title, value }) {
   return (
     <div
-      className="bg-[#F6F3ED] rounded-3xl p-6 
-    shadow-[0_15px_40px_rgba(0,0,0,0.06)]"
+      className="bg-[#1c1b1b] rounded-2xl p-6 border border-white/5 glow-border-resting glow-border-hover transition-all duration-300"
     >
-      <p className="text-sm text-[#6B7C78]">{title}</p>
-      <h2 className="text-2xl font-semibold text-[#3A4F4B] mt-2">{value}</h2>
+      <p className="font-[family-name:var(--font-inter)] text-[10px] uppercase tracking-widest text-neutral-500">{title}</p>
+      <h2 className="text-3xl font-[family-name:var(--font-space-grotesk)] font-bold text-white mt-2">{value}</h2>
     </div>
   );
 }
