@@ -77,32 +77,60 @@ export default function Dashboard() {
     console.log("Sending taskId:", taskId);
 
     if (!planData || generating) return;
-    
-    // 1. Optimistic UI update: mark as completed
+
+    // 1. Optimistic UI update: mark as completed (shows checkmark + fade)
     const newPlan = JSON.parse(JSON.stringify(planData));
     const slot = newPlan.days[dayIndex].slots[slotIndex];
     if (slot.completed) return; // Prevent double clicks
-    
+
     slot.completed = true;
     setPlanData(newPlan);
 
-    // 2. Wait 300ms for animation, then remove and call API
+    // 2. Call API FIRST — only remove from UI if DB update succeeds
     setTimeout(async () => {
-      setPlanData((currentPlan) => {
-        if (!currentPlan) return currentPlan;
-        const updated = JSON.parse(JSON.stringify(currentPlan));
-        updated.days[dayIndex].slots = updated.days[dayIndex].slots.filter((s) => s.id !== taskId);
-        return updated;
-      });
-
       try {
-        await fetch("/api/update-task", {
+        const res = await fetch("/api/update-task", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId: user.id, taskId }),
         });
+
+        // BUG FIX #3: Check response before removing from UI state.
+        // Previously, any API error was silently swallowed — the task disappeared
+        // from UI but the DB was never updated, so it reappeared on refresh.
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          console.error("Failed to remove task from DB:", errData.error || res.status);
+          // Revert the optimistic UI update so user knows something went wrong
+          setPlanData((currentPlan) => {
+            if (!currentPlan) return currentPlan;
+            const reverted = JSON.parse(JSON.stringify(currentPlan));
+            reverted.days[dayIndex].slots[slotIndex].completed = false;
+            return reverted;
+          });
+          return;
+        }
+
+        // DB updated successfully — now remove from UI
+        setPlanData((currentPlan) => {
+          if (!currentPlan) return currentPlan;
+          const updated = JSON.parse(JSON.stringify(currentPlan));
+          updated.days[dayIndex].slots = updated.days[dayIndex].slots.filter(
+            (s) => s.id !== taskId
+          );
+          return updated;
+        });
       } catch (err) {
         console.error("Failed to update task", err);
+        // Revert optimistic update on network failure
+        setPlanData((currentPlan) => {
+          if (!currentPlan) return currentPlan;
+          const reverted = JSON.parse(JSON.stringify(currentPlan));
+          if (reverted.days[dayIndex]?.slots[slotIndex]) {
+            reverted.days[dayIndex].slots[slotIndex].completed = false;
+          }
+          return reverted;
+        });
       }
     }, 300);
   };
