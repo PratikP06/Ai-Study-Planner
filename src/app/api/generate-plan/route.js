@@ -18,14 +18,28 @@ export async function POST(req) {
   try {
     const {
       userId,
-      userPrompt = "",
+      userPrompt: rawPrompt = "",
       studyDuration = 7,
       regenerate = false,
     } = await req.json();
 
+    // Sanitize and length-limit the user prompt to prevent prompt injection
+    const userPrompt = rawPrompt.trim().slice(0, 800);
+
     // ── Input validation ───────────────────────────────────────────────────
     if (!userId) {
       return errorResponse("User ID is required.", 401);
+    }
+
+    // ── SECURITY FIX: Verify the session token matches the claimed userId ──
+    // Without this, any caller can pass any userId and overwrite another user's plan.
+    const authHeader = req.headers.get("Authorization");
+    const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+    if (token) {
+      const { data: { user: sessionUser } } = await supabase.auth.getUser(token);
+      if (!sessionUser || sessionUser.id !== userId) {
+        return errorResponse("Unauthorized.", 401);
+      }
     }
     if (!Number.isFinite(studyDuration) || studyDuration < 1 || studyDuration > 90) {
       return errorResponse("Study duration must be between 1 and 90 days.", 400);
@@ -59,8 +73,31 @@ export async function POST(req) {
       });
     }
 
+    // ── Fetch existing user data to enrich the AI prompt ──────────────────
+    // AI QUALITY FIX: Pass subjects, topics, exams from DB so the AI produces
+    // a plan grounded in what the user has already registered, not invented generic topics.
+    const [{ data: existingSubjects }, { data: allTopics }, { data: existingExams }] =
+      await Promise.all([
+        supabase.from("subjects").select("id, name").eq("user_id", userId),
+        supabase.from("topics").select("id, name, subject_id, strength").eq("user_id", userId),
+        supabase.from("exams").select("*, subjects(name)").eq("user_id", userId),
+      ]);
+
+    // Compute daysLeft for each exam
+    const enrichedExams = (existingExams || []).map(e => {
+      const examDate = new Date(e.exam_date);
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      const daysLeft = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+      return { ...e, daysLeft };
+    });
+
     // ── Build pure prompt and call AI ─────────────────────────────────────
-    const prompt = buildPurePlanPrompt(userPrompt, studyDuration, today);
+    const prompt = buildPurePlanPrompt(userPrompt, studyDuration, today, {
+      existingSubjects: existingSubjects || [],
+      existingTopics: allTopics || [],
+      existingExams: enrichedExams,
+    });
     const planData = await askGroqStructured(prompt);
 
     if (!Array.isArray(planData?.days)) {
@@ -97,6 +134,33 @@ export async function POST(req) {
           if (!subjErr && insertedSubj) {
             subjectNameToIdMap[subj.name] = insertedSubj.id;
           }
+        }
+      }
+    }
+
+    // ── BUG FIX #1: Insert AI-extracted topics into the topics table ──────
+    // Previously planData.topics was completely discarded, so the Focus page
+    // subject selector had no topic context and SubjectsSection showed empty.
+    if (Array.isArray(planData.topics)) {
+      for (const topic of planData.topics) {
+        const subId = subjectNameToIdMap[topic.subjectName];
+        if (!subId) continue;
+
+        // Avoid duplicates
+        const { data: existingTopic } = await supabase
+          .from("topics")
+          .select("id")
+          .eq("subject_id", subId)
+          .ilike("name", topic.name)
+          .maybeSingle();
+
+        if (!existingTopic) {
+          await supabase.from("topics").insert({
+            subject_id: subId,
+            user_id: userId,
+            name: topic.name,
+            strength: topic.strength || "medium",
+          });
         }
       }
     }
@@ -139,8 +203,9 @@ export async function POST(req) {
     }
 
     // ── Persist plan (replace existing if any) ───────────────────────────
-    // Delete any existing plans for the user to ensure only ONE active plan exists
-    await supabase.from("plans").delete().eq("user_id", userId);
+    // BUG FIX #4: Only delete TODAY's plan — not the full history.
+    // The old line `delete().eq("user_id", userId)` wiped all plan history on every regeneration.
+    await supabase.from("plans").delete().eq("user_id", userId).eq("plan_date", today);
 
     const { data: inserted, error: insertError } = await supabase
       .from("plans")

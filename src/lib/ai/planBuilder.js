@@ -205,13 +205,61 @@ Use this exact schema:
 // ─── Pure Plan Prompt Builder ──────────────────────────────────────────────
 
 /**
- * Instructs the AI that it is generating everything from scratch.
+ * Builds a rich, context-aware prompt using BOTH the user's free-text input
+ * AND their existing subjects/topics/exams from the database.
  *
- * @param {string} userPrompt - Natural language instructions from user
- * @param {number} studyDuration - Number of days to plan for
- * @param {string} currentDate - Today's date (YYYY-MM-DD)
+ * @param {string} userPrompt      - Natural language instructions from user
+ * @param {number} studyDuration   - Number of days to plan for
+ * @param {string} currentDate     - Today's date (YYYY-MM-DD)
+ * @param {object} [context]       - Optional DB context
+ * @param {Array}  [context.existingSubjects] - subjects from DB [{ id, name }]
+ * @param {Array}  [context.existingTopics]   - topics from DB [{ name, subject_id, strength }]
+ * @param {Array}  [context.existingExams]    - exams from DB [{ exam_date, subjects: { name }, daysLeft }]
+ * @param {Array}  [context.completedSlots]   - recently completed task names for continuity
  */
-export function buildPurePlanPrompt(userPrompt, studyDuration, currentDate) {
+export function buildPurePlanPrompt(userPrompt, studyDuration, currentDate, context = {}) {
+  const {
+    existingSubjects = [],
+    existingTopics = [],
+    existingExams = [],
+    completedSlots = [],
+  } = context;
+
+  // Format DB context lines (only included if data exists)
+  const dbSubjectLines = existingSubjects.length
+    ? existingSubjects.map(s => `  - ${s.name}`).join("\n")
+    : null;
+
+  const dbTopicLines = existingTopics.length
+    ? existingTopics.map(t => {
+        const subj = existingSubjects.find(s => s.id === t.subject_id);
+        return `  - ${subj?.name || "General"} › ${t.name} [${t.strength || "medium"}]`;
+      }).join("\n")
+    : null;
+
+  const dbExamLines = existingExams.length
+    ? existingExams.map(e => `  - ${e.subjects?.name || "Unknown"}: ${e.exam_date} (${e.daysLeft ?? "?"} days away)`).join("\n")
+    : null;
+
+  const completedLines = completedSlots.length
+    ? completedSlots.slice(-10).join(", ")
+    : null;
+
+  const dbContextSection = (dbSubjectLines || dbTopicLines || dbExamLines) ? `
+## 📚 EXISTING USER DATA (from their profile — USE THIS as ground truth)
+
+${dbSubjectLines ? `Registered Subjects:\n${dbSubjectLines}` : ""}
+${dbTopicLines ? `\nKnown Topics (with self-reported strength):\n${dbTopicLines}` : ""}
+${dbExamLines ? `\nUpcoming Exams:\n${dbExamLines}` : ""}
+${completedLines ? `\nRecently Completed Tasks: ${completedLines}` : ""}
+
+RULES FOR EXISTING DATA:
+- Prefer registered subjects/topics over inventing new ones
+- Weak-strength topics MUST get more sessions than medium or strong
+- Topics with exams within 7 days must appear every day
+- Do not add topics the user hasn't registered UNLESS they explicitly mention them in their prompt
+` : "";
+
   return `You are an expert AI study planner.
 
 Your job is to generate a structured study plan STRICTLY based on the user's input.
@@ -222,7 +270,7 @@ You must FOLLOW the user's instructions precisely and MUST NOT invent unrelated 
 TODAY: ${currentDate}
 PLAN DURATION: ${studyDuration} days
 USER INPUT: "${userPrompt?.trim() || "Create a general study plan."}"
-
+${dbContextSection}
 ---
 
 ## 🔒 INPUT INTERPRETATION (VERY IMPORTANT)
@@ -247,7 +295,7 @@ USER INPUT: "${userPrompt?.trim() || "Create a general study plan."}"
 3. DO NOT add topics like Graph Theory, DP, etc unless explicitly mentioned  
 4. Always prioritize subjects with upcoming exams  
 5. Allocate MORE time to topics mentioned by the user  
-6. If no topics are provided → then and only then generate reasonable ones  
+6. If no topics are provided → use EXISTING DATA topics above, or generate minimal reasonable ones  
 
 ---
 
@@ -266,20 +314,23 @@ USER INPUT: "${userPrompt?.trim() || "Create a general study plan."}"
 ---
 
 If user mentions a subject without topics:
-- Generate minimal introductory topics
+- Use existing topics from profile if available
+- Otherwise generate minimal introductory topics
 - Assign LOW priority to those topics
 - Allocate significantly less time compared to user-specified topics
 
 ## 🧠 PRIORITY RULES
 
 - High priority:
+  • Topics with weak strength in existing data  
   • Topics mentioned by user  
-  • Subjects with exams soon  
+  • Subjects with exams within 7 days  
 
 - Medium priority:
   • Supporting topics (ONLY if user did not specify enough topics)
 
 - Low priority:
+  • Strong-strength topics (already mastered)
   • Optional revision  
 
 ---
@@ -311,7 +362,7 @@ If user mentions a subject without topics:
     { "name": "<subject name>" }
   ],
   "topics": [
-    { "subjectName": "<subject name>", "name": "<topic name>" }
+    { "subjectName": "<subject name>", "name": "<topic name>", "strength": "<weak|medium|strong>" }
   ],
   "exams": [
     { "subjectName": "<subject name>", "examDate": "<YYYY-MM-DD>" }
@@ -335,5 +386,6 @@ If user mentions a subject without topics:
     }
   ]
 }`;
-}
 
+
+}

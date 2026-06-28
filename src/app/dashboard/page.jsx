@@ -55,10 +55,10 @@ export default function Dashboard() {
         .eq("user_id", user.id)
         .eq("plan_date", today)
         .single();
-        
+
       if (existingPlan) {
-        const parsed = typeof existingPlan.content === "string" 
-          ? JSON.parse(existingPlan.content) 
+        const parsed = typeof existingPlan.content === "string"
+          ? JSON.parse(existingPlan.content)
           : existingPlan.content;
         setPlanData(parsed);
       }
@@ -171,9 +171,13 @@ export default function Dashboard() {
       </div>
     );
   }
-  
-  // Find current day slots for "Today's Plan"
-  const todaysSlots = planData?.days?.[0]?.slots || [];
+
+  // BUG FIX #3: Find today's actual day by date, not by assuming index 0.
+  // If a 7-day plan was generated yesterday, today is day 2 (index 1), not index 0.
+  const nowIST = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+  const todayDateStr = nowIST.toISOString().slice(0, 10);
+  const todayDayIndex = planData?.days?.findIndex(d => d.date === todayDateStr) ?? 0;
+  const todaysSlots = planData?.days?.[todayDayIndex]?.slots || [];
 
   return (
     <div className="px-6 sm:px-10 py-12">
@@ -201,14 +205,14 @@ export default function Dashboard() {
             <div className="flex justify-between items-center mb-8">
               <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#e7e5e5]">Today's Plan</h2>
               <div className="flex space-x-3">
-                <button 
-                  onClick={() => window.scrollTo(0, document.body.scrollHeight)} 
+                <button
+                  onClick={() => window.scrollTo(0, document.body.scrollHeight)}
                   className="px-4 py-2 bg-[#1f2020] text-[#e7e5e5] text-xs font-bold rounded-full hover:bg-[#3a3939] transition-colors"
                 >
                   Regenerate Plan
                 </button>
-                <button 
-                  onClick={() => router.push('/dashboard/focus')} 
+                <button
+                  onClick={() => router.push('/dashboard/focus')}
                   className="px-4 py-2 bg-[#c6c6c7] text-[#3f4041] text-xs font-bold rounded-full hover:bg-[#d4d4d4] transition-colors"
                 >
                   Continue Focus
@@ -222,17 +226,15 @@ export default function Dashboard() {
                   todaysSlots.map((slot, idx) => {
                     const isDone = slot.completed;
                     return (
-                      <div 
-                        key={slot.id} 
-                        className={`flex items-center space-x-4 p-4 rounded-2xl transition-all duration-300 group cursor-pointer ${
-                          isDone ? 'bg-[#252626] opacity-50 scale-95' : 'hover:bg-[#252626] opacity-100 scale-100'
-                        }`}
-                        onClick={() => completeTask(0, idx, slot.id)}
+                      <div
+                        key={slot.id}
+                        className={`flex items-center space-x-4 p-4 rounded-2xl transition-all duration-300 group cursor-pointer ${isDone ? 'bg-[#252626] opacity-50 scale-95' : 'hover:bg-[#252626] opacity-100 scale-100'
+                          }`}
+                        onClick={() => completeTask(todayDayIndex, idx, slot.id)}
                       >
                         <div className="flex-shrink-0">
-                          <div className={`h-6 w-6 rounded-full flex items-center justify-center transition-all duration-300 ${
-                            isDone ? 'bg-[#c6c6c7]' : 'border-2 border-[#484848] group-hover:border-[#c6c6c7]'
-                          }`}>
+                          <div className={`h-6 w-6 rounded-full flex items-center justify-center transition-all duration-300 ${isDone ? 'bg-[#c6c6c7]' : 'border-2 border-[#484848] group-hover:border-[#c6c6c7]'
+                            }`}>
                             <FiCheck className={`text-[#3f4041] text-sm font-bold transition-opacity duration-300 ${isDone ? 'opacity-100' : 'opacity-0'}`} />
                           </div>
                         </div>
@@ -265,7 +267,7 @@ export default function Dashboard() {
             </div>
 
             <div className="mt-10">
-              <button 
+              <button
                 onClick={generatePlan}
                 disabled={generating || !aiPrompt.trim()}
                 className="w-full group relative overflow-hidden rounded-full bg-[#2b2c2c] py-6 px-8 flex items-center justify-center space-x-4 transition-all duration-500 hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-white/5 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -288,15 +290,15 @@ export default function Dashboard() {
               </div>
 
               <div className="relative mb-8">
-                <textarea 
+                <textarea
                   value={aiPrompt}
                   onChange={(e) => setAiPrompt(e.target.value)}
-                  className="w-full bg-[#3a3939]/40 border-none rounded-xl p-5 text-[#e7e5e5] placeholder:text-[#c6c6c6]/50 focus:ring-2 focus:ring-[#c6c6c7]/20 min-h-[120px] resize-none focus:outline-none" 
+                  className="w-full bg-[#3a3939]/40 border-none rounded-xl p-5 text-[#e7e5e5] placeholder:text-[#c6c6c6]/50 focus:ring-2 focus:ring-[#c6c6c7]/20 min-h-[120px] resize-none focus:outline-none"
                   placeholder="Ask AI to update your schedule..."
                   disabled={generating}
                 />
                 <div className="absolute bottom-4 right-4">
-                  <button 
+                  <button
                     onClick={generatePlan}
                     disabled={generating || !aiPrompt.trim()}
                     className="h-10 w-10 rounded-full bg-[#c6c6c7] text-[#3f4041] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform disabled:opacity-50"
