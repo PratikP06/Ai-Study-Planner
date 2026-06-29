@@ -30,7 +30,6 @@ export default function Sidebar({ collapsed, setCollapsed, user, name }) {
         { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
         { name: "Focus", href: "/dashboard/focus", icon: Timer },
         { name: "Analytics", href: "/dashboard/analytics", icon: BarChart2 },
-
         { name: " AI Notes", href: "/dashboard/notes", icon: Sparkles },
     ];
 
@@ -76,8 +75,8 @@ export default function Sidebar({ collapsed, setCollapsed, user, name }) {
                             key={item.name}
                             href={item.href}
                             className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                                    ? "bg-white/10 text-white border border-white/10 shadow-[0_0_12px_rgba(255,255,255,0.04)]"
-                                    : "text-neutral-400 hover:text-white hover:bg-white/5"
+                                ? "bg-white/10 text-white border border-white/10 shadow-[0_0_12px_rgba(255,255,255,0.04)]"
+                                : "text-neutral-400 hover:text-white hover:bg-white/5"
                                 }`}
                         >
                             <Icon size={18} />

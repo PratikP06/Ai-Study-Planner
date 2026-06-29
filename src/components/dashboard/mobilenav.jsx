@@ -24,8 +24,8 @@ export default function MobileNav() {
       icon: BarChart2,
     },
     {
-      name: "AI",
-      href: "/dashboard/ai",
+      name: "AI Notes",
+      href: "/dashboard/notes",
       icon: Sparkles,
     },
   ];
@@ -45,14 +45,12 @@ export default function MobileNav() {
             <Link
               key={item.name}
               href={item.href}
-              className={`flex flex-col items-center text-xs transition-all duration-200 ${
-                isActive ? "text-white" : "text-neutral-500"
-              }`}
+              className={`flex flex-col items-center text-xs transition-all duration-200 ${isActive ? "text-white" : "text-neutral-500"
+                }`}
             >
               <div
-                className={`p-2 rounded-xl transition ${
-                  isActive ? "bg-white/10 shadow-[0_0_8px_rgba(255,255,255,0.05)]" : ""
-                }`}
+                className={`p-2 rounded-xl transition ${isActive ? "bg-white/10 shadow-[0_0_8px_rgba(255,255,255,0.05)]" : ""
+                  }`}
               >
                 <Icon size={20} />
               </div>
