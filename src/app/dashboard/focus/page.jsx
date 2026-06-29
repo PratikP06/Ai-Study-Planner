@@ -159,7 +159,7 @@ export default function FocusPage() {
         <div className="z-10 text-center space-y-8">
           <div className="font-[family-name:var(--font-inter)] text-[10px] uppercase tracking-[0.2em] text-[#919191]">Focus Mode</div>
           <h1 className="font-[family-name:var(--font-space-grotesk)] font-bold text-6xl md:text-7xl tracking-tighter text-white">
-            All Done Today 🎉
+            All Done Today
           </h1>
           <p className="text-neutral-500 max-w-md mx-auto">
             You've completed all subjects for today. Generate a new plan or come back tomorrow.
