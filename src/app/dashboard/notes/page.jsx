@@ -54,6 +54,7 @@ function MermaidChart({ chart }) {
 
 // -------------------
 // Main Page
+//ntg
 // -------------------
 export default function NotesPage() {
   const router = useRouter();
@@ -247,6 +248,7 @@ export default function NotesPage() {
                   disabled={downloading}
                   className="px-6 py-3 rounded-full text-sm font-medium border border-white/10 text-neutral-400 hover:text-white hover:bg-white/5 transition-all disabled:opacity-50"
                 >
+
                   {downloading ? "Downloading..." : "Download as PDF"}
                 </button>
               )}
