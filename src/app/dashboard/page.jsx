@@ -322,14 +322,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-[#2a2a2a] rounded-lg p-8 border-t border-white/10 glow-border-resting overflow-hidden relative">
-              <div className="relative z-10">
-                <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold mb-2 text-white">Focus Insight</h3>
-                <p className="text-[#c6c6c6] text-sm leading-relaxed">
-                  {planData?.summary || "You're most productive between 10 PM and 1 AM. Your deep focus sessions are 22% longer during these hours."}
-                </p>
-              </div>
-            </div>
+
           </div>
 
         </section>

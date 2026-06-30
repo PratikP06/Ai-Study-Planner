@@ -2,29 +2,27 @@
 
 export default function MonolithCTA({ user }) {
   return (
-    <section className="py-48 px-8 flex flex-col items-center">
-      <div className="max-w-4xl w-full text-center space-y-16">
-        <h2 className="font-[family-name:var(--font-space-grotesk)] text-5xl md:text-7xl font-bold tracking-tighter text-white leading-[0.9]">
-          The workspace <br />you&apos;ve been waiting for.
+    <section className="py-32 sm:py-44 px-6 flex flex-col items-center bg-[#0e0e0e]">
+      <div className="max-w-3xl w-full text-center space-y-12">
+        <h2 className="font-[family-name:var(--font-space-grotesk)] text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-[1.05]">
+          Your next study session
+          <br />
+          could start in two minutes.
         </h2>
 
-        {/* Vertical gradient line */}
-        <div className="h-20 w-[1px] bg-gradient-to-b from-white/20 to-transparent mx-auto" />
+        <div className="h-16 w-px bg-gradient-to-b from-white/30 to-transparent mx-auto" />
 
-        <div className="space-y-10">
-          <p className="text-neutral-400 text-lg md:text-xl font-light">
-            Join the elite tier of digital scholars. Limited access now open for the ethereal beta.
+        <div className="space-y-8">
+          <p className="text-neutral-500 text-base sm:text-lg font-light max-w-md mx-auto">
+            No setup beyond telling it what you're studying. The plan builds itself from there.
           </p>
 
-          {/* Gradient-bordered button */}
-          <div className="inline-block p-[1px] bg-gradient-to-r from-white/10 via-white/50 to-white/10 rounded-full">
-            <a
-              href={user ? "/dashboard" : "/login"}
-              className="block bg-neutral-950 text-white font-bold px-12 py-6 rounded-full text-sm uppercase tracking-widest hover:bg-neutral-900 transition-colors"
-            >
-              {user ? "Go to Dashboard" : "Request Invitation"}
-            </a>
-          </div>
+          <a
+            href={user ? "/dashboard" : "/signup"}
+            className="inline-block bg-white text-[#131313] font-semibold px-10 py-5 rounded-full text-sm hover:bg-white/90 hover:scale-[1.02] active:scale-95 transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.12)]"
+          >
+            {user ? "Go to dashboard" : "Start planning, free"}
+          </a>
         </div>
       </div>
     </section>
